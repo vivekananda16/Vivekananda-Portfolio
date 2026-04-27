@@ -1,38 +1,269 @@
-.App {
+/* ─── Google Font ─────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* ─── CSS Variables (Themes) ──────────────── */
+:root {
+  --primary:       #1a7a4a;
+  --primary-light: #22a05e;
+  --primary-dark:  #145e38;
+  --bg:            #0d0d0d;
+  --bg-card:       #1a1a1a;
+  --bg-nav:        #111111;
+  --text:          #f0f0f0;
+  --text-muted:    #aaaaaa;
+  --border:        #2a2a2a;
+  --shadow:        rgba(26, 122, 74, 0.3);
+}
+
+/* ─── Light Theme ─────────────────────────── */
+.light {
+  --bg:         #f5f5f5;
+  --bg-card:    #ffffff;
+  --bg-nav:     #ffffff;
+  --text:       #1a1a1a;
+  --text-muted: #666666;
+  --border:     #e0e0e0;
+  --shadow:     rgba(26, 122, 74, 0.2);
+}
+
+/* ─── Reset ───────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ─── Scrollbar ───────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+/* ─── Section Styles ──────────────────────── */
+.section {
+  padding: 80px 0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
   text-align: center;
+  margin-bottom: 10px;
+  color: var(--text);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.section-title span {
+  color: var(--primary);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.section-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 50px;
+  font-size: 0.95rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.section-line {
+  width: 60px;
+  height: 4px;
+  background: var(--primary);
+  margin: 10px auto 20px;
+  border-radius: 2px;
+}
+
+/* ─── Buttons ─────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 15px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+  transform: skewX(-20deg);
+  transition: all 0.5s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(26, 122, 74, 0.5);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.btn-primary:hover::after {
+  left: 200%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  padding: 12px 28px;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-outline:hover {
+  background: rgba(26, 122, 74, 0.1);
+  color: var(--primary);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(26, 122, 74, 0.2), inset 0 0 15px rgba(26, 122, 74, 0.2);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text);
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.light .btn-glass {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn-glass:hover {
+  background: rgba(26, 122, 74, 0.1);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(26, 122, 74, 0.2);
+}
+
+/* ─── Cards ───────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px var(--shadow);
+  border-color: var(--primary);
+}
+
+/* ─── Responsive ──────────────────────────── */
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 0;
   }
-  to {
-    transform: rotate(360deg);
+  .section-title {
+    font-size: 1.6rem;
   }
+  .fancy-title-wrapper {
+    height: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.4rem;
+  }
+  .fancy-title-wrapper {
+    height: 34px;
+  }
+}
+
+/* ─── 3D Multilingual Title Flip ──────────────── */
+.fancy-title-wrapper {
+  position: relative;
+  text-align: center;
+  height: 48px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  perspective: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fancy-title-wrapper .section-title {
+  margin-bottom: 0;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.title-primary {
+  transform-origin: top;
+  transform: rotateX(0deg);
+}
+
+.title-secondary {
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+  opacity: 0;
+}
+
+.fancy-title-wrapper:hover .title-primary {
+  transform: rotateX(90deg);
+  opacity: 0;
+}
+
+.fancy-title-wrapper:hover .title-secondary {
+  transform: rotateX(0deg);
+  opacity: 1;
 }

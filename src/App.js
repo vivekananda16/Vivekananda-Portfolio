@@ -1,23 +1,47 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import About from './components/About';
+import Skills from './components/Skills';
+import Projects from './components/Projects';
+import Certifications from './components/Certifications';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
+import ParticleBackground from './components/ParticleBackground';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 function App() {
+  const [theme, setTheme] = useState('dark');
+
+  // Initialize AOS animations
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+      offset: 100,
+    });
+  }, []);
+
+  // Toggle dark/light theme
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={theme === 'light' ? 'light' : ''}>
+      <ParticleBackground />
+      
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Certifications />
+      <Contact />
+      <Footer />
     </div>
   );
 }
