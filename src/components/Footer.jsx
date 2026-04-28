@@ -212,7 +212,7 @@ const Footer = () => {
 
       {/* Scroll to Top Button */}
       <button 
-        className={`scroll-top-btn \${showTopBtn ? 'show' : ''}`} 
+        className={`scroll-top-btn ${showTopBtn ? 'show' : ''}`} 
         onClick={scrollToTop}
         title="Scroll to Top"
       >

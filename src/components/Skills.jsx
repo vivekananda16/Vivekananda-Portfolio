@@ -332,7 +332,7 @@ const Skills = () => {
           
           {/* Sidebar Tabs */}
           <div className="console-sidebar">
-            <div className="sidebar-header">// Select Stack</div>
+            <div className="sidebar-header">{"// Select Stack"}</div>
             {skillCategories.map((category, index) => (
               <button 
                 key={index}

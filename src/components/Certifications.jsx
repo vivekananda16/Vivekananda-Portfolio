@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaAward, FaCheckCircle, FaBarcode, FaCode } from 'react-icons/fa';
+import { FaCheckCircle, FaBarcode, FaCode } from 'react-icons/fa';
 import certQspiders from '../assets/cert_qspiders.jpg';
 import certTestYantra from '../assets/cert_testyantra.png';
 import certClaude from '../assets/cert_claude.png';
