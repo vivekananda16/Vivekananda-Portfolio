@@ -11,9 +11,6 @@ const Hero = () => {
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // 3D Tilt State
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
   // Typewriter Effect
   useEffect(() => {
     const timeout = setTimeout(() => {
