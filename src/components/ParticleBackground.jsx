@@ -91,28 +91,41 @@ const ParticleBackground = () => {
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         
-        // Pseudo-random but stable distribution mapped to a sphere
+        // Stable pseudo-random values
         const r1 = ((i * 13) % 1000) / 1000;
         const r2 = ((i * 17) % 1000) / 1000;
+        const r3 = ((i * 19) % 1000) / 1000;
 
-        const theta = r1 * Math.PI * 2;
-        const phi = Math.acos(2 * r2 - 1);
+        // --- ELEGANT GALAXY SWIRL ---
+        const arms = 5; // 5 spiral arms
+        const radius = Math.pow(r1, 1.5) * 800; // Concentrate particles near the center
+        const armOffset = (i % arms) * (Math.PI * 2 / arms);
+        const spiralAngle = r1 * Math.PI * 4; // The twist of the galaxy
         
-        // Complex wave interference pattern (Breathing Energy Sphere)
-        const wave = Math.sin(10 * theta + time * 2) * Math.cos(10 * phi - time);
-        const radius = 250 + wave * 50 + Math.sin(time * 0.5 + i) * 20;
+        // Rotate slowly over time
+        const theta = armOffset + spiralAngle + time * 0.15;
+        
+        // Z-axis spread: thicker at the center, tapering at the edges
+        const heightSpread = Math.pow(1 - r1, 2) * 150 * (r2 - 0.5);
+        
+        // Organic chaos / stardust drift
+        const chaos = r3 * 40 * r1;
 
-        const x = radius * Math.sin(phi) * Math.cos(theta);
-        const y = radius * Math.sin(phi) * Math.sin(theta);
-        const z = radius * Math.cos(phi);
+        const x = Math.cos(theta) * radius + Math.cos(time * 0.5 + i) * chaos;
+        const z = Math.sin(theta) * radius + Math.sin(time * 0.5 + i) * chaos;
+        const y = heightSpread + Math.sin(time * 0.3 + r1 * 10) * 15;
 
         posArray[i3] = x;
-        posArray[i3 + 1] = y;
+        posArray[i3 + 1] = y; // Y is up/down in ThreeJS
         posArray[i3 + 2] = z;
 
-        // Dynamic color shifting from deep green to cyan/emerald
-        const hue = 0.35 + wave * 0.1;
-        colorHelper.setHSL(hue, 1.0, 0.4 + (wave + 1) * 0.2);
+        // --- DYNAMIC COLORING ---
+        // Core is cyan/teal (0.5), edges fade to deep blue/purple (0.7)
+        const hue = 0.5 + r1 * 0.2 + Math.sin(time * 0.1 + r2) * 0.05;
+        // Bright in center, darker at edges, with a soft pulse
+        const lightness = 0.7 - (r1 * 0.5) + (Math.sin(time * 2 + i * 0.01) * 0.15);
+        
+        colorHelper.setHSL(hue, 0.9, lightness);
         
         colArray[i3] = colorHelper.r;
         colArray[i3 + 1] = colorHelper.g;
