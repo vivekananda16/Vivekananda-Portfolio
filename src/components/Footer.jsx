@@ -3,6 +3,7 @@ import { FaLinkedinIn, FaGithub, FaInstagram, FaFacebookF, FaArrowUp } from 'rea
 import { Link } from 'react-scroll';
 
 const Footer = () => {
+  // eslint-disable-next-line no-unused-vars
   const [showTopBtn, setShowTopBtn] = useState(false);
 
   useEffect(() => {

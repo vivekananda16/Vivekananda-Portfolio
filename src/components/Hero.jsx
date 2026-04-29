@@ -370,8 +370,8 @@ const Hero = () => {
       <div 
         className="mouse-spotlight" 
         style={{
-          '--mouse-x': \`\${mousePos.x}px\`,
-          '--mouse-y': \`\${mousePos.y}px\`
+          '--mouse-x': `${mousePos.x}px`,
+          '--mouse-y': `${mousePos.y}px`
         }}
       ></div>
 
@@ -450,20 +450,20 @@ const Hero = () => {
             {/* The Interactive Holographic Card */}
             <div 
               ref={cardRef}
-              className={\`holo-card \${isHovering ? 'hovered' : ''}\`}
+              className={`holo-card ${isHovering ? 'hovered' : ''}`}
               onMouseMove={handleCardMove}
               onMouseEnter={handleCardEnter}
               onMouseLeave={handleCardLeave}
               style={{
-                transform: \`rotateX(\${cardTilt.x}deg) rotateY(\${cardTilt.y}deg)\`
+                transform: `rotateX(${cardTilt.x}deg) rotateY(${cardTilt.y}deg)`
               }}
             >
               {/* Dynamic Glare that tracks mouse inside the card */}
               <div 
                 className="holo-glare"
                 style={{
-                  '--glow-x': \`\${cardTilt.glowX}%\`,
-                  '--glow-y': \`\${cardTilt.glowY}%\`,
+                  '--glow-x': `${cardTilt.glowX}%`,
+                  '--glow-y': `${cardTilt.glowY}%`,
                   '--glow-opacity': isHovering ? 1 : 0
                 }}
               ></div>
