@@ -5,6 +5,7 @@ const ParticleBackground = () => {
   const mountRef = useRef(null);
 
   useEffect(() => {
+    const currentMount = mountRef.current;
     // 1. Setup Scene, Camera, Renderer
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x0d0d0d, 0.001); // Dark fog to blend edges
@@ -141,8 +142,8 @@ const ParticleBackground = () => {
       document.removeEventListener('mousemove', onDocumentMouseMove);
       cancelAnimationFrame(animationFrameId);
       
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (currentMount) {
+        currentMount.removeChild(renderer.domElement);
       }
       
       geometry.dispose();
