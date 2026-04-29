@@ -304,7 +304,7 @@ const Certifications = () => {
 
 const styles = {
   section: {
-    backgroundColor: 'var(--bg)',
+    backgroundColor: 'transparent',
     position: 'relative',
   }
 };

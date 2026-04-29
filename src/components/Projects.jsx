@@ -470,7 +470,7 @@ const Projects = () => {
 
 const styles = {
   section: {
-    backgroundColor: 'var(--bg-card)',
+    backgroundColor: 'transparent',
   },
   tabsContainer: {
     display: 'flex',

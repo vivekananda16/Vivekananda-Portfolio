@@ -381,7 +381,8 @@ const Skills = () => {
 
 const styles = {
   section: {
-    backgroundColor: 'var(--bg)',
+    backgroundColor: 'transparent',
+    position: 'relative',
   }
 };
 

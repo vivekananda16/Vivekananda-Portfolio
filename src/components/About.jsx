@@ -3,7 +3,7 @@ import { FaMapMarkerAlt, FaGraduationCap, FaBriefcase, FaHeart } from 'react-ico
 
 const About = () => {
     return (
-        <section id="about" className="section" style={{ backgroundColor: 'var(--bg-card)' }}>
+        <section id="about" className="section" style={{ backgroundColor: 'transparent' }}>
             <style>
                 {`
                   .bento-grid {

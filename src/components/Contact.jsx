@@ -299,7 +299,7 @@ const Contact = () => {
 
 const styles = {
   section: {
-    backgroundColor: 'var(--bg-card)',
+    backgroundColor: 'transparent',
   }
 };
 
