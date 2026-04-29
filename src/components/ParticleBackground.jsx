@@ -26,17 +26,12 @@ const ParticleBackground = () => {
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
-    const velocities = new Float32Array(particleCount * 3); // NEW: For fluid dynamics
 
-    // Initial fill
+    // Initial fill (will be immediately overwritten in animation loop)
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 2000;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+      positions[i * 3] = (Math.random() - 0.5) * 1000;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 1000;
-      
-      velocities[i * 3] = 0;
-      velocities[i * 3 + 1] = 0;
-      velocities[i * 3 + 2] = 0;
       
       colors[i * 3] = 0;
       colors[i * 3 + 1] = 1;
@@ -48,7 +43,7 @@ const ParticleBackground = () => {
 
     // Custom glowing material
     const material = new THREE.PointsMaterial({
-      size: 2.0,
+      size: 1.5,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
       transparent: true,
@@ -62,15 +57,13 @@ const ParticleBackground = () => {
     // 3. Interaction & Resizing
     let mouseX = 0;
     let mouseY = 0;
-    let targetMouseX = 0;
-    let targetMouseY = 0;
     const windowHalfX = window.innerWidth / 2;
     const windowHalfY = window.innerHeight / 2;
 
     const onDocumentMouseMove = (event) => {
       // Scale mouse coordinates to match the 3D terrain space
-      targetMouseX = (event.clientX - windowHalfX) * 3;
-      targetMouseY = (event.clientY - windowHalfY) * 3;
+      mouseX = (event.clientX - windowHalfX) * 3;
+      mouseY = (event.clientY - windowHalfY) * 3;
     };
     document.addEventListener('mousemove', onDocumentMouseMove);
 
@@ -89,80 +82,56 @@ const ParticleBackground = () => {
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       
-      const time = clock.getElapsedTime(); // Global simulation time
-      
-      // Smooth mouse interpolation
-      mouseX += (targetMouseX - mouseX) * 0.1;
-      mouseY += (targetMouseY - mouseY) * 0.1;
+      const time = clock.getElapsedTime() * 0.8; // Global simulation time
       
       const posArray = particles.geometry.attributes.position.array;
       const colArray = particles.geometry.attributes.color.array;
 
-      // --- REAL MAGIC: Bioluminescent Fluid Vortex ---
+      // --- MAGICAL CYBER SEA ---
+      // A vast, undulating ocean of data that reacts to the mouse
+      const gridSize = Math.ceil(Math.sqrt(particleCount)); // ~142
+      
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         
-        let x = posArray[i3];
-        let y = posArray[i3 + 1];
-        let z = posArray[i3 + 2];
+        // 2D Grid coordinates mapped to a massive 3D plane
+        const ix = i % gridSize;
+        const iz = Math.floor(i / gridSize);
         
-        let vx = velocities[i3];
-        let vy = velocities[i3 + 1];
-        let vz = velocities[i3 + 2];
+        // Spread particles out from -1500 to +1500
+        const x = (ix / gridSize - 0.5) * 3000;
+        const z = (iz / gridSize - 0.5) * 3000;
         
-        // 1. Fluid Flow Field (Fake 3D Curl Noise for organic drift)
-        const flowX = Math.sin(y * 0.002 + time * 0.5) * Math.cos(z * 0.002);
-        const flowY = Math.sin(z * 0.002 + time * 0.4) * Math.cos(x * 0.002);
-        const flowZ = Math.sin(x * 0.002 + time * 0.6) * Math.cos(y * 0.002);
+        // Complex mathematical waves
+        const distFromCenter = Math.sqrt(x*x + z*z);
+        const wave1 = Math.sin(x * 0.003 + time) * 80;
+        const wave2 = Math.cos(z * 0.002 - time * 0.5) * 100;
+        const wave3 = Math.sin(distFromCenter * 0.005 - time) * 120;
         
-        // 2. The Magic: Mouse Vortex Interaction
-        const dx = mouseX - x;
-        const dy = -mouseY - y; // Y is flipped
-        const dist = Math.sqrt(dx*dx + dy*dy);
+        // --- THE MAGIC (Interactive Mouse Magnet) ---
+        // Mouse pulls the glowing terrain up like a magnetic field
+        // Note: Y is flipped in 2D mouse space vs 3D
+        const dx = x - mouseX;
+        const dz = z - mouseY;
+        const distToMouse = Math.sqrt(dx*dx + dz*dz);
+        const magneticLift = Math.max(0, 400 - distToMouse) * 0.8;
         
-        if (dist < 400) {
-          const force = (400 - dist) / 400;
-          // Create a swirling tornado/vortex around the mouse
-          vx += dy * force * 0.003;
-          vy -= dx * force * 0.003;
-          vz += (Math.random() - 0.5) * force * 2; // Sparkle outward
-        }
-        
-        // 3. Gentle gravity to bring them back to the center
-        vx += -x * 0.00005;
-        vy += -y * 0.00005;
-        vz += -z * 0.00005;
+        // Final Y position combining waves and mouse interaction
+        const y = wave1 + wave2 + wave3 + magneticLift - 300;
 
-        // Apply flow field forces
-        vx += flowX * 0.15;
-        vy += flowY * 0.15;
-        vz += flowZ * 0.15;
-        
-        // 4. Friction/Viscosity (fluid feels thick and smooth)
-        vx *= 0.94;
-        vy *= 0.94;
-        vz *= 0.94;
-        
-        // Apply velocity to position
-        x += vx;
-        y += vy;
-        z += vz;
-        
-        // Save state
         posArray[i3] = x;
         posArray[i3 + 1] = y;
         posArray[i3 + 2] = z;
-        velocities[i3] = vx;
-        velocities[i3 + 1] = vy;
-        velocities[i3 + 2] = vz;
 
-        // 5. Bioluminescent Coloring
-        // Velocity dictates energy (brightness)
-        const speed = Math.sqrt(vx*vx + vy*vy + vz*vz);
+        // --- MAGICAL COLORING ---
+        // Color shifts from Matrix Green to Holographic Cyan based on height
+        const heightRatio = Math.max(0, Math.min(1, (y + 500) / 800)); // Normalize height
         
-        // Shift from deep space blue/cyan to bright emerald green when energized
-        const hue = 0.55 - speed * 0.04; 
-        const lightness = Math.min(0.9, 0.1 + speed * 0.2); // Glow intensely when swirling
+        const hue = 0.35 + heightRatio * 0.15; // 0.35 = Green, 0.5 = Cyan
+        
+        // Brighten significantly if lifted by the mouse
+        const isLifted = magneticLift > 10;
+        const lightness = 0.2 + (heightRatio * 0.5) + (isLifted ? 0.3 : 0) + (Math.sin(time * 3 + i) * 0.1);
         
         colorHelper.setHSL(hue, 1.0, lightness);
         

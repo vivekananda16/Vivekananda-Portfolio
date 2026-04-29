@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-scroll';
 import { FaGithub, FaLinkedin, FaEnvelope, FaPhone } from 'react-icons/fa';
 import vivekananda from '../assets/vivekananda.webp';
@@ -10,6 +10,14 @@ const Hero = () => {
   const [currentRole, setCurrentRole] = useState('');
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Magic Spotlight State
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // Holographic 3D Card State
+  const cardRef = useRef(null);
+  const [cardTilt, setCardTilt] = useState({ x: 0, y: 0, glowX: 50, glowY: 50 });
+  const [isHovering, setIsHovering] = useState(false);
 
   // Typewriter Effect
   useEffect(() => {
@@ -31,35 +39,35 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, [currentRole, isDeleting, roleIndex]);
 
-  // Global 3D Spatial Tilt Handler
-  const [globalTilt, setGlobalTilt] = useState({ x: 0, y: 0 });
-
+  // Global Spotlight
   const handleGlobalMouseMove = (e) => {
-    // Only apply 3D tilt on desktop screens
-    if (window.innerWidth < 768) return; 
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    
-    // Calculate rotation (-15 to +15 degrees max)
-    setGlobalTilt({ 
-      x: -(y / rect.height) * 20, 
-      y: (x / rect.width) * 20 
-    });
-  };
-  
-  const handleGlobalMouseLeave = () => {
-    setGlobalTilt({ x: 0, y: 0 });
+    setMousePos({ x: e.clientX, y: e.clientY });
   };
 
-  // Generate background stars
-  const stars = Array.from({ length: 30 }).map((_, i) => ({
-    top: Math.random() * 100 + '%',
-    left: Math.random() * 100 + '%',
-    animationDelay: Math.random() * 5 + 's',
-    animationDuration: Math.random() * 10 + 10 + 's'
-  }));
+  // Holographic Card Logic
+  const handleCardMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    // Calculate rotation (-20 to 20 degrees)
+    const rotateX = ((y / rect.height) - 0.5) * -40;
+    const rotateY = ((x / rect.width) - 0.5) * 40;
+    
+    // Calculate glow position percentage
+    const glowX = (x / rect.width) * 100;
+    const glowY = (y / rect.height) * 100;
+
+    setCardTilt({ x: rotateX, y: rotateY, glowX, glowY });
+  };
+
+  const handleCardEnter = () => setIsHovering(true);
+  const handleCardLeave = () => {
+    setIsHovering(false);
+    // Smoothly reset the card to flat
+    setCardTilt({ x: 0, y: 0, glowX: 50, glowY: 50 });
+  };
 
   return (
     <section 
@@ -67,7 +75,6 @@ const Hero = () => {
       className="hero-section" 
       style={styles.section}
       onMouseMove={handleGlobalMouseMove}
-      onMouseLeave={handleGlobalMouseLeave}
     >
       <style>
         {`
@@ -75,33 +82,21 @@ const Hero = () => {
             position: relative;
             overflow: hidden;
             background: transparent;
-            perspective: 2000px; /* Deep 3D Space */
-          }
-          
-          /* The Entire 3D Wrapper */
-          .hero-3d-wrapper {
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
           }
 
-          /* Floating Stars in Deep Space */
-          .star {
-            position: absolute;
-            width: 3px; height: 3px;
-            background: #fff;
-            border-radius: 50%;
-            opacity: 0.2;
-            transform: translateZ(-200px); /* Way in the back */
-            animation: twinkle linear infinite alternate;
-          }
-          @keyframes twinkle {
-            0% { transform: translateZ(-200px) scale(1); opacity: 0.1; }
-            100% { transform: translateZ(-150px) scale(2); opacity: 0.6; box-shadow: 0 0 10px #fff; }
+          /* Global Mouse Spotlight Aura */
+          .mouse-spotlight {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(
+              800px circle at var(--mouse-x) var(--mouse-y), 
+              rgba(26, 122, 74, 0.15),
+              transparent 40%
+            );
+            transition: background 0.1s ease;
           }
 
           /* Greeting Swap */
@@ -112,7 +107,8 @@ const Hero = () => {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--primary);
-            transform: translateZ(60px); /* Pops out */
+            text-transform: uppercase;
+            letter-spacing: 2px;
           }
           .greet-eng, .greet-san {
             position: absolute;
@@ -131,6 +127,24 @@ const Hero = () => {
             60%, 100% { opacity: 0; transform: translateY(10px); }
           }
 
+          /* Shining Text Effect */
+          .hero-name {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--text) 20%, var(--primary) 40%, var(--primary) 60%, var(--text) 80%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shineText 5s linear infinite;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          }
+          @keyframes shineText { 
+            to { background-position: 200% center; } 
+          }
+
           /* Typewriter cursor */
           .cursor {
             display: inline-block;
@@ -143,97 +157,121 @@ const Hero = () => {
           }
           @keyframes blink { 50% { opacity: 0; } }
 
-          /* 3D Photo Container */
-          .photo-container {
-            position: relative;
-            width: 320px;
-            height: 380px;
-            transform-style: preserve-3d;
-            z-index: 2;
-            transform: translateZ(80px); /* Floats heavily */
+          /* Interactive Holographic Card */
+          .holo-card-container {
+            perspective: 2000px;
+            z-index: 10;
+            width: 340px;
+            height: 420px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           }
-          .photo-border {
+          .holo-card {
             width: 300px;
-            height: 360px;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            border: 4px solid var(--primary);
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 30px rgba(26, 122, 74, 0.5);
-            background: rgba(18,18,18,0.5);
-            backdrop-filter: blur(10px);
+            height: 380px;
+            border-radius: 20px;
             position: relative;
             transform-style: preserve-3d;
-            transition: border-radius 8s ease-in-out infinite alternate;
+            transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+            background: rgba(18, 18, 18, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
           }
-          .photo-border:hover {
-            border-radius: 50% 50% 30% 70% / 50% 30% 70% 50%;
+          .holo-card.hovered {
+            box-shadow: 
+              0 30px 60px -12px rgba(0,0,0,0.8),
+              0 0 40px rgba(26, 122, 74, 0.4);
           }
           
-          /* Dynamic Glare Effect */
-          .photo-glare {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
-            mix-blend-mode: overlay;
-            transform: translateZ(30px);
-            pointer-events: none;
-          }
-
-          .photo-img {
-            width: 100%; height: 100%;
+          /* The floating image inside the card */
+          .holo-img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
             object-position: top;
-            transform: translateZ(40px) scale(1.05); /* Image literally floats out of its own border */
+            border-radius: 19px;
+            transform: translateZ(40px) scale(0.92);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease;
+          }
+          .holo-card.hovered .holo-img {
+            transform: translateZ(70px) scale(0.95);
+          }
+          
+          /* Dynamic Holographic Foil Glare */
+          .holo-glare {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 20px;
+            background: radial-gradient(
+              circle at var(--glow-x) var(--glow-y), 
+              rgba(255, 255, 255, 0.8) 0%, 
+              rgba(255, 255, 255, 0) 60%
+            );
+            mix-blend-mode: overlay;
+            opacity: var(--glow-opacity);
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            transform: translateZ(41px); /* Just above the image */
           }
 
-          /* 3D Orbiting Badges */
-          .orbit-ring {
+          /* Glowing Orbital Ring */
+          .magical-orbit {
             position: absolute;
             top: 50%; left: 50%;
             width: 480px; height: 480px;
-            margin-top: -240px; margin-left: -240px;
+            transform: translate(-50%, -50%);
             border: 2px dashed rgba(26, 122, 74, 0.3);
             border-radius: 50%;
-            animation: spin3D 25s linear infinite;
-            transform-style: preserve-3d;
+            animation: slowSpin 30s linear infinite;
             pointer-events: none;
+            box-shadow: inset 0 0 50px rgba(26, 122, 74, 0.1);
           }
-          @keyframes spin3D { 
-            0% { transform: translateZ(-50px) rotateX(60deg) rotateZ(0deg); }
-            100% { transform: translateZ(-50px) rotateX(60deg) rotateZ(360deg); } 
-          }
+          @keyframes slowSpin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
 
-          .orbit-badge {
+          /* Glass Badges */
+          .magic-badge {
             position: absolute;
-            background: rgba(26, 26, 26, 0.85);
+            background: rgba(20, 20, 20, 0.85);
             border: 1px solid var(--primary);
             color: #fff;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 800;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(26, 122, 74, 0.6);
-            white-space: nowrap;
-            /* Complex counter-rotation to stay upright in 3D space */
-            animation: counterSpin3D 25s linear infinite;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 0 15px rgba(26, 122, 74, 0.5);
+            animation: counterSpin 30s linear infinite;
             pointer-events: auto;
-            backdrop-filter: blur(5px);
-            transform-style: preserve-3d;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            cursor: default;
           }
-          .light .orbit-badge {
+          .light .magic-badge {
             background: rgba(255, 255, 255, 0.9);
             color: var(--text);
           }
-
-          @keyframes counterSpin3D { 
-            0% { transform: rotateZ(0deg) rotateX(-60deg) translateZ(80px); }
-            100% { transform: rotateZ(-360deg) rotateX(-60deg) translateZ(80px); } 
+          .magic-badge:hover {
+            transform: scale(1.1) !important;
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 30px var(--primary);
+            animation-play-state: paused;
           }
+          @keyframes counterSpin { 100% { transform: rotate(-360deg); } }
           
           /* Positions on the ring */
           .badge-1 { top: -20px; left: 50%; margin-left: -60px; }
           .badge-2 { bottom: 60px; right: -30px; }
           .badge-3 { bottom: 60px; left: -30px; }
+          
+          .social-link-hover:hover {
+            background: var(--primary) !important;
+            color: #fff !important;
+            border-color: var(--primary) !important;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(26, 122, 74, 0.3);
+          }
           
           /* Magical Scroll Indicator */
           .mouse-scroll {
@@ -293,46 +331,34 @@ const Hero = () => {
           
           /* --- Responsive Queries --- */
           @media (max-width: 768px) {
-            .hero-3d-wrapper { transform: none !important; }
             .hero-container {
               flex-direction: column !important;
               text-align: center;
               gap: 40px !important;
               padding-top: 20px !important;
-              transform: none !important;
             }
-            .hero-name { font-size: 2.5rem !important; transform: none !important; }
-            .titleWrapper { justify-content: center; transform: none !important; }
-            .hero-tagline { margin: 0 auto 30px !important; transform: none !important; }
-            .socials { justify-content: center; transform: none !important; }
-            .btnRow, .resumeRow { justify-content: center; transform: none !important; }
+            .hero-name { font-size: 3rem !important; }
+            .titleWrapper { justify-content: center; }
+            .hero-tagline { margin: 0 auto 30px !important; }
+            .socials, .btnRow, .resumeRow { justify-content: center; }
             
-            .photo-container {
+            .holo-card-container {
               width: 260px !important;
-              height: 310px !important;
-              margin: 0 auto;
-              transform: none !important;
+              height: 340px !important;
             }
-            .photo-border {
+            .holo-card {
               width: 240px !important;
-              height: 290px !important;
-              margin: 0 auto;
+              height: 300px !important;
+              transform: none !important; /* Disable 3D tilt on mobile */
             }
-            .orbit-ring {
-              width: 320px !important;
-              height: 320px !important;
-              margin-top: -160px; margin-left: -160px;
-              animation: spin 20s linear infinite; /* Fallback to 2D spin for mobile */
-              transform: none;
+            .magical-orbit {
+              width: 340px !important;
+              height: 340px !important;
             }
-            @keyframes spin { 100% { transform: rotate(360deg); } }
-            
-            .orbit-badge {
+            .magic-badge {
               font-size: 0.75rem !important;
               padding: 6px 12px !important;
-              animation: counterSpin 20s linear infinite; /* Fallback 2D counterspin */
             }
-            @keyframes counterSpin { 100% { transform: rotate(-360deg); } }
             .badge-1 { top: -10px !important; }
             .badge-2 { bottom: 40px !important; right: -10px !important; }
             .badge-3 { bottom: 40px !important; left: -10px !important; }
@@ -340,114 +366,113 @@ const Hero = () => {
         `}
       </style>
 
-      {/* Background Deep Space Stars */}
-      {stars.map((s, i) => (
-        <div key={i} className="star" style={s}></div>
-      ))}
-
-      {/* The 3D Rotational Scene */}
+      {/* Global Mouse Spotlight Background */}
       <div 
-        className="hero-3d-wrapper"
+        className="mouse-spotlight" 
         style={{
-          transform: window.innerWidth > 768 ? `rotateX(${globalTilt.x}deg) rotateY(${globalTilt.y}deg)` : 'none'
+          '--mouse-x': \`\${mousePos.x}px\`,
+          '--mouse-y': \`\${mousePos.y}px\`
         }}
-      >
-        <div style={styles.container} className="hero-container">
+      ></div>
+
+      <div style={styles.container} className="hero-container">
+        
+        {/* Left Side — Magical Text */}
+        <div style={styles.textSide} data-aos="fade-right">
           
-          {/* Left Side — 3D Floating Text */}
-          <div style={{ ...styles.textSide, transformStyle: 'preserve-3d' }} data-aos="fade-right">
-            
-            <div className="greeting-container">
-              <span className="greet-eng">👋 Hello, I'm</span>
-              <span className="greet-san">🙏 Namaste, I'm</span>
-            </div>
+          <div className="greeting-container">
+            <span className="greet-eng">👋 Hello, I'm</span>
+            <span className="greet-san">🙏 Namaste, I'm</span>
+          </div>
 
-            <h1 
-              style={{...styles.name, transform: 'translateZ(100px)'}} 
-              className="hero-name"
-            >
-              Vivekananda<br />Mohanty
-            </h1>
+          <h1 className="hero-name">
+            Vivekananda<br />Mohanty
+          </h1>
 
-            <div 
-              style={{...styles.titleWrapper, transform: 'translateZ(80px)'}} 
-              className="titleWrapper"
-            >
-              <span style={styles.titleDot}></span>
-              <p style={styles.title}>
-                {currentRole}
-                <span className="cursor"></span>
-              </p>
-            </div>
-
-            <p 
-              style={{...styles.tagline, transform: 'translateZ(60px)'}} 
-              className="hero-tagline"
-            >
-              Building robust web applications & ensuring software quality
-              through clean code and thorough testing.
+          <div style={styles.titleWrapper} className="titleWrapper">
+            <span style={styles.titleDot}></span>
+            <p style={styles.title}>
+              {currentRole}
+              <span className="cursor"></span>
             </p>
-
-            <div style={{...styles.socials, transform: 'translateZ(50px)'}} className="socials">
-              <a href="https://github.com/vivekananda16" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
-                <FaGithub />
-              </a>
-              <a href="https://www.linkedin.com/in/vivekananda-mohanty-2a0956209" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
-                <FaLinkedin />
-              </a>
-              <a href="mailto:vivekanandamohanty7@gmail.com" style={styles.socialLink} className="social-link-hover">
-                <FaEnvelope />
-              </a>
-              <a href="tel:+917978011886" style={styles.socialLink} className="social-link-hover">
-                <FaPhone />
-              </a>
-            </div>
-
-            <div style={{...styles.btnRow, transform: 'translateZ(70px)'}} className="btnRow">
-              <Link to="projects" smooth={true} duration={600} offset={-70} className="btn-primary">
-                View Projects
-              </Link>
-              <Link to="contact" smooth={true} duration={600} offset={-70} className="btn-outline">
-                Contact Me
-              </Link>
-            </div>
-
-            <div style={{...styles.resumeRow, transform: 'translateZ(60px)'}} className="resumeRow">
-              <a href="https://drive.google.com/file/d/1nl7qPbkplH2FOEbTzKX0fWP9o6HzJwQ2/view?usp=sharing" target="_blank" rel="noreferrer" className="btn-glass">
-                📄 Full Stack Resume
-              </a>
-              <a href="https://drive.google.com/file/d/1oCS2oqxTIAb8CgYOMK-sQoIzV2DyXRRZ/view?usp=sharing" target="_blank" rel="noreferrer" className="btn-glass">
-                📄 QA Resume
-              </a>
-            </div>
           </div>
 
-          {/* Right Side — Massive 3D Photo & Orbit */}
-          <div style={{ ...styles.photoSide, transformStyle: 'preserve-3d' }} data-aos="fade-left">
-            <div className="photo-container">
-              
-              {/* Deep Space Orbiting Ring */}
-              <div className="orbit-ring">
-                <div className="orbit-badge badge-1">☕ Java Dev</div>
-                <div className="orbit-badge badge-2">⚛️ React Dev</div>
-                <div className="orbit-badge badge-3">🧪 QA Engineer</div>
-              </div>
+          <p style={styles.tagline} className="hero-tagline">
+            Building robust web applications & ensuring software quality
+            through clean code and thorough testing.
+          </p>
 
-              {/* The Floating 3D Photo */}
-              <div className="photo-border">
-                {/* Dynamic Lighting Glare */}
-                <div 
-                  className="photo-glare"
-                  style={{
-                    opacity: 0.3 + (globalTilt.x + globalTilt.y) * 0.02
-                  }}
-                ></div>
-                <img src={vivekananda} alt="Vivekananda Mohanty" className="photo-img" />
-              </div>
-            </div>
+          <div style={styles.socials} className="socials">
+            <a href="https://github.com/vivekananda16" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
+              <FaGithub />
+            </a>
+            <a href="https://www.linkedin.com/in/vivekananda-mohanty-2a0956209" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
+              <FaLinkedin />
+            </a>
+            <a href="mailto:vivekanandamohanty7@gmail.com" style={styles.socialLink} className="social-link-hover">
+              <FaEnvelope />
+            </a>
+            <a href="tel:+917978011886" style={styles.socialLink} className="social-link-hover">
+              <FaPhone />
+            </a>
           </div>
 
+          <div style={styles.btnRow} className="btnRow">
+            <Link to="projects" smooth={true} duration={600} offset={-70} className="btn-primary">
+              View Projects
+            </Link>
+            <Link to="contact" smooth={true} duration={600} offset={-70} className="btn-outline">
+              Contact Me
+            </Link>
+          </div>
+
+          <div style={styles.resumeRow} className="resumeRow">
+            <a href="https://drive.google.com/file/d/1nl7qPbkplH2FOEbTzKX0fWP9o6HzJwQ2/view?usp=sharing" target="_blank" rel="noreferrer" className="btn-glass">
+              📄 Full Stack Resume
+            </a>
+            <a href="https://drive.google.com/file/d/1oCS2oqxTIAb8CgYOMK-sQoIzV2DyXRRZ/view?usp=sharing" target="_blank" rel="noreferrer" className="btn-glass">
+              📄 QA Resume
+            </a>
+          </div>
         </div>
+
+        {/* Right Side — Holographic Interactive Card */}
+        <div style={styles.photoSide} data-aos="fade-left">
+          <div className="holo-card-container">
+            
+            {/* Slow Glowing Orbital Ring */}
+            <div className="magical-orbit">
+              <div className="magic-badge badge-1">☕ Java Dev</div>
+              <div className="magic-badge badge-2">⚛️ React Dev</div>
+              <div className="magic-badge badge-3">🧪 QA Engineer</div>
+            </div>
+
+            {/* The Interactive Holographic Card */}
+            <div 
+              ref={cardRef}
+              className={\`holo-card \${isHovering ? 'hovered' : ''}\`}
+              onMouseMove={handleCardMove}
+              onMouseEnter={handleCardEnter}
+              onMouseLeave={handleCardLeave}
+              style={{
+                transform: \`rotateX(\${cardTilt.x}deg) rotateY(\${cardTilt.y}deg)\`
+              }}
+            >
+              {/* Dynamic Glare that tracks mouse inside the card */}
+              <div 
+                className="holo-glare"
+                style={{
+                  '--glow-x': \`\${cardTilt.glowX}%\`,
+                  '--glow-y': \`\${cardTilt.glowY}%\`,
+                  '--glow-opacity': isHovering ? 1 : 0
+                }}
+              ></div>
+              
+              <img src={vivekananda} alt="Vivekananda Mohanty" className="holo-img" />
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* Scroll Down Indicator */}
@@ -491,14 +516,7 @@ const styles = {
   textSide: {
     flex: 1,
     minWidth: '320px',
-  },
-  name: {
-    fontSize: '3.5rem',
-    fontWeight: '800',
-    color: 'var(--text)',
-    lineHeight: 1.1,
-    marginBottom: '16px',
-    textShadow: '0 5px 15px rgba(0,0,0,0.1)',
+    zIndex: 2,
   },
   titleWrapper: {
     display: 'flex',
