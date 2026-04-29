@@ -34,19 +34,30 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, [currentRole, isDeleting, roleIndex]);
 
-  // 3D Tilt Handler
-  const handleMouseMove = (e) => {
+  // Global 3D Spatial Tilt Handler
+  const [globalTilt, setGlobalTilt] = useState({ x: 0, y: 0 });
+
+  const handleGlobalMouseMove = (e) => {
+    // Only apply 3D tilt on desktop screens
+    if (window.innerWidth < 768) return; 
+    
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
-    setTilt({ x: -(y / 15), y: x / 15 });
+    
+    // Calculate rotation (-15 to +15 degrees max)
+    setGlobalTilt({ 
+      x: -(y / rect.height) * 20, 
+      y: (x / rect.width) * 20 
+    });
   };
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
+  
+  const handleGlobalMouseLeave = () => {
+    setGlobalTilt({ x: 0, y: 0 });
   };
 
-  // Generate particles
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
+  // Generate background stars
+  const stars = Array.from({ length: 30 }).map((_, i) => ({
     top: Math.random() * 100 + '%',
     left: Math.random() * 100 + '%',
     animationDelay: Math.random() * 5 + 's',
@@ -54,39 +65,57 @@ const Hero = () => {
   }));
 
   return (
-    <section id="hero" className="hero-section" style={styles.section}>
+    <section 
+      id="hero" 
+      className="hero-section" 
+      style={styles.section}
+      onMouseMove={handleGlobalMouseMove}
+      onMouseLeave={handleGlobalMouseLeave}
+    >
       <style>
         {`
           .hero-section {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--bg-card) 100%);
+            background: transparent;
+            perspective: 2000px; /* Deep 3D Space */
           }
           
-          /* Particles */
-          .particle {
-            position: absolute;
-            width: 4px; height: 4px;
-            background: var(--primary);
-            border-radius: 50%;
-            filter: blur(1px);
-            opacity: 0.3;
-            animation: floatParticle linear infinite alternate;
-            pointer-events: none;
+          /* The Entire 3D Wrapper */
+          .hero-3d-wrapper {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
-          @keyframes floatParticle {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
-            100% { transform: translate(30px, -30px) scale(1.5); opacity: 0.4; }
+
+          /* Floating Stars in Deep Space */
+          .star {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.2;
+            transform: translateZ(-200px); /* Way in the back */
+            animation: twinkle linear infinite alternate;
+          }
+          @keyframes twinkle {
+            0% { transform: translateZ(-200px) scale(1); opacity: 0.1; }
+            100% { transform: translateZ(-150px) scale(2); opacity: 0.6; box-shadow: 0 0 10px #fff; }
           }
 
           /* Greeting Swap */
           .greeting-container {
             position: relative;
             height: 28px;
-            margin-bottom: 8px;
-            font-size: 1.2rem;
-            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
             color: var(--primary);
+            transform: translateZ(60px); /* Pops out */
           }
           .greet-eng, .greet-san {
             position: absolute;
@@ -122,8 +151,9 @@ const Hero = () => {
             position: relative;
             width: 320px;
             height: 380px;
-            perspective: 1000px;
+            transform-style: preserve-3d;
             z-index: 2;
+            transform: translateZ(80px); /* Floats heavily */
           }
           .photo-border {
             width: 300px;
@@ -131,80 +161,82 @@ const Hero = () => {
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
             border: 4px solid var(--primary);
             overflow: hidden;
-            box-shadow: 0 20px 60px var(--shadow), inset 0 0 30px rgba(26, 122, 74, 0.5);
-            transition: transform 0.1s ease-out;
-            transform-style: preserve-3d;
-            background: var(--bg-card);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 30px rgba(26, 122, 74, 0.5);
+            background: rgba(18,18,18,0.5);
+            backdrop-filter: blur(10px);
             position: relative;
-            z-index: 2;
+            transform-style: preserve-3d;
+            transition: border-radius 8s ease-in-out infinite alternate;
           }
-          .photo-border::after {
-            content: '';
+          .photo-border:hover {
+            border-radius: 50% 50% 30% 70% / 50% 30% 70% 50%;
+          }
+          
+          /* Dynamic Glare Effect */
+          .photo-glare {
             position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
-            transform: skewX(-20deg);
-            animation: shine 4s infinite;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+            mix-blend-mode: overlay;
+            transform: translateZ(30px);
+            pointer-events: none;
           }
-          @keyframes shine { 100% { left: 200%; } }
 
           .photo-img {
             width: 100%; height: 100%;
             object-fit: cover;
             object-position: top;
-            transform: translateZ(20px) scale(1.05); /* Pop out effect */
+            transform: translateZ(40px) scale(1.05); /* Image literally floats out of its own border */
           }
 
-          /* Orbiting Badges */
+          /* 3D Orbiting Badges */
           .orbit-ring {
             position: absolute;
             top: 50%; left: 50%;
-            width: 420px; height: 420px;
-            transform: translate(-50%, -50%);
-            border: 1px dashed rgba(26, 122, 74, 0.2);
+            width: 480px; height: 480px;
+            margin-top: -240px; margin-left: -240px;
+            border: 2px dashed rgba(26, 122, 74, 0.3);
             border-radius: 50%;
-            animation: spin 20s linear infinite;
-            z-index: 1;
+            animation: spin3D 25s linear infinite;
+            transform-style: preserve-3d;
             pointer-events: none;
           }
-          @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+          @keyframes spin3D { 
+            0% { transform: translateZ(-50px) rotateX(60deg) rotateZ(0deg); }
+            100% { transform: translateZ(-50px) rotateX(60deg) rotateZ(360deg); } 
+          }
 
           .orbit-badge {
             position: absolute;
-            background: rgba(26, 26, 26, 0.8);
+            background: rgba(26, 26, 26, 0.85);
             border: 1px solid var(--primary);
             color: #fff;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px rgba(26, 122, 74, 0.4);
+            font-size: 0.9rem;
+            font-weight: 800;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(26, 122, 74, 0.6);
             white-space: nowrap;
-            /* Counter-spin so text stays upright */
-            animation: counterSpin 20s linear infinite;
+            /* Complex counter-rotation to stay upright in 3D space */
+            animation: counterSpin3D 25s linear infinite;
             pointer-events: auto;
             backdrop-filter: blur(5px);
+            transform-style: preserve-3d;
           }
-          /* Light mode fix for orbit badge */
           .light .orbit-badge {
             background: rgba(255, 255, 255, 0.9);
             color: var(--text);
           }
 
-          @keyframes counterSpin { 100% { transform: rotate(-360deg); } }
+          @keyframes counterSpin3D { 
+            0% { transform: rotateZ(0deg) rotateX(-60deg) translateZ(80px); }
+            100% { transform: rotateZ(-360deg) rotateX(-60deg) translateZ(80px); } 
+          }
           
           /* Positions on the ring */
-          .badge-1 { top: -15px; left: 50%; margin-left: -50px; }
-          .badge-2 { bottom: 60px; right: -20px; }
-          .badge-3 { bottom: 60px; left: -20px; }
-          
-          .social-link-hover:hover {
-            background: var(--primary) !important;
-            color: #fff !important;
-            border-color: var(--primary) !important;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(26, 122, 74, 0.3);
-          }
+          .badge-1 { top: -20px; left: 50%; margin-left: -60px; }
+          .badge-2 { bottom: 60px; right: -30px; }
+          .badge-3 { bottom: 60px; left: -30px; }
           
           /* Magical Scroll Indicator */
           .mouse-scroll {
@@ -264,36 +296,25 @@ const Hero = () => {
           
           /* --- Responsive Queries --- */
           @media (max-width: 768px) {
+            .hero-3d-wrapper { transform: none !important; }
             .hero-container {
               flex-direction: column !important;
               text-align: center;
               gap: 40px !important;
               padding-top: 20px !important;
+              transform: none !important;
             }
-            .hero-name {
-              font-size: 2.5rem !important;
-            }
-            .titleWrapper {
-              justify-content: center;
-            }
-            .hero-tagline {
-              margin: 0 auto 30px !important;
-            }
-            .socials {
-              justify-content: center;
-            }
-            .btnRow {
-              justify-content: center;
-            }
-            .resumeRow {
-              justify-content: center;
-            }
+            .hero-name { font-size: 2.5rem !important; transform: none !important; }
+            .titleWrapper { justify-content: center; transform: none !important; }
+            .hero-tagline { margin: 0 auto 30px !important; transform: none !important; }
+            .socials { justify-content: center; transform: none !important; }
+            .btnRow, .resumeRow { justify-content: center; transform: none !important; }
             
-            /* Scale down 3D photo & orbit ring */
             .photo-container {
               width: 260px !important;
               height: 310px !important;
               margin: 0 auto;
+              transform: none !important;
             }
             .photo-border {
               width: 240px !important;
@@ -303,11 +324,18 @@ const Hero = () => {
             .orbit-ring {
               width: 320px !important;
               height: 320px !important;
+              margin-top: -160px; margin-left: -160px;
+              animation: spin 20s linear infinite; /* Fallback to 2D spin for mobile */
+              transform: none;
             }
+            @keyframes spin { 100% { transform: rotate(360deg); } }
+            
             .orbit-badge {
               font-size: 0.75rem !important;
               padding: 6px 12px !important;
+              animation: counterSpin 20s linear infinite; /* Fallback 2D counterspin */
             }
+            @keyframes counterSpin { 100% { transform: rotate(-360deg); } }
             .badge-1 { top: -10px !important; }
             .badge-2 { bottom: 40px !important; right: -10px !important; }
             .badge-3 { bottom: 40px !important; left: -10px !important; }
@@ -315,114 +343,114 @@ const Hero = () => {
         `}
       </style>
 
-      {/* Particle Background */}
-      {particles.map((p, i) => (
-        <div key={i} className="particle" style={p}></div>
+      {/* Background Deep Space Stars */}
+      {stars.map((s, i) => (
+        <div key={i} className="star" style={s}></div>
       ))}
 
-      <div style={styles.container} className="hero-container">
-        {/* Left Side — Text */}
-        <div style={styles.textSide} data-aos="fade-right">
+      {/* The 3D Rotational Scene */}
+      <div 
+        className="hero-3d-wrapper"
+        style={{
+          transform: window.innerWidth > 768 ? `rotateX(${globalTilt.x}deg) rotateY(${globalTilt.y}deg)` : 'none'
+        }}
+      >
+        <div style={styles.container} className="hero-container">
           
-          {/* Automatic Translation Greeting */}
-          <div className="greeting-container">
-            <span className="greet-eng">👋 Hello, I'm</span>
-            <span className="greet-san">🙏 Namaste, I'm</span>
-          </div>
-
-          <h1 style={styles.name} className="hero-name">Vivekananda<br />Mohanty</h1>
-
-          {/* Typewriter Title */}
-          <div style={styles.titleWrapper} className="titleWrapper">
-            <span style={styles.titleDot}></span>
-            <p style={styles.title}>
-              {currentRole}
-              <span className="cursor"></span>
-            </p>
-          </div>
-
-          <p style={styles.tagline} className="hero-tagline">
-            Building robust web applications & ensuring software quality
-            through clean code and thorough testing.
-          </p>
-
-          {/* Social Links */}
-          <div style={styles.socials} className="socials">
-            <a href="https://github.com/vivekananda16" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
-              <FaGithub />
-            </a>
-            <a href="https://www.linkedin.com/in/vivekananda-mohanty-2a0956209" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
-              <FaLinkedin />
-            </a>
-            <a href="mailto:vivekanandamohanty7@gmail.com" style={styles.socialLink} className="social-link-hover">
-              <FaEnvelope />
-            </a>
-            <a href="tel:+917978011886" style={styles.socialLink} className="social-link-hover">
-              <FaPhone />
-            </a>
-          </div>
-
-          {/* Buttons */}
-          <div style={styles.btnRow} className="btnRow">
-            <Link to="projects" smooth={true} duration={600} offset={-70} className="btn-primary">
-              View Projects
-            </Link>
-            <Link to="contact" smooth={true} duration={600} offset={-70} className="btn-outline">
-              Contact Me
-            </Link>
-          </div>
-
-          {/* Resume Download Buttons */}
-          <div style={styles.resumeRow} className="resumeRow">
-            <a
-              href="https://drive.google.com/file/d/1nl7qPbkplH2FOEbTzKX0fWP9o6HzJwQ2/view?usp=sharing"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-glass"
-            >
-              📄 Full Stack Resume
-            </a>
-            <a
-              href="https://drive.google.com/file/d/1oCS2oqxTIAb8CgYOMK-sQoIzV2DyXRRZ/view?usp=sharing"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-glass"
-            >
-              📄 QA Resume
-            </a>
-          </div>
-        </div>
-
-        {/* Right Side — Holographic 3D Photo & Orbiting Badges */}
-        <div style={styles.photoSide} data-aos="fade-left">
-          <div 
-            className="photo-container"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            {/* The Orbiting Ring */}
-            <div className="orbit-ring">
-              <div className="orbit-badge badge-1">☕ Java Dev</div>
-              <div className="orbit-badge badge-2">⚛️ React Dev</div>
-              <div className="orbit-badge badge-3">🧪 QA Engineer</div>
+          {/* Left Side — 3D Floating Text */}
+          <div style={{ ...styles.textSide, transformStyle: 'preserve-3d' }} data-aos="fade-right">
+            
+            <div className="greeting-container">
+              <span className="greet-eng">👋 Hello, I'm</span>
+              <span className="greet-san">🙏 Namaste, I'm</span>
             </div>
 
-            {/* The 3D Photo */}
+            <h1 
+              style={{...styles.name, transform: 'translateZ(100px)'}} 
+              className="hero-name"
+            >
+              Vivekananda<br />Mohanty
+            </h1>
+
             <div 
-              className="photo-border"
-              style={{
-                transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`
-              }}
+              style={{...styles.titleWrapper, transform: 'translateZ(80px)'}} 
+              className="titleWrapper"
             >
-              <img
-                src={vivekananda}
-                alt="Vivekananda Mohanty"
-                className="photo-img"
-              />
+              <span style={styles.titleDot}></span>
+              <p style={styles.title}>
+                {currentRole}
+                <span className="cursor"></span>
+              </p>
+            </div>
+
+            <p 
+              style={{...styles.tagline, transform: 'translateZ(60px)'}} 
+              className="hero-tagline"
+            >
+              Building robust web applications & ensuring software quality
+              through clean code and thorough testing.
+            </p>
+
+            <div style={{...styles.socials, transform: 'translateZ(50px)'}} className="socials">
+              <a href="https://github.com/vivekananda16" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
+                <FaGithub />
+              </a>
+              <a href="https://www.linkedin.com/in/vivekananda-mohanty-2a0956209" target="_blank" rel="noreferrer" style={styles.socialLink} className="social-link-hover">
+                <FaLinkedin />
+              </a>
+              <a href="mailto:vivekanandamohanty7@gmail.com" style={styles.socialLink} className="social-link-hover">
+                <FaEnvelope />
+              </a>
+              <a href="tel:+917978011886" style={styles.socialLink} className="social-link-hover">
+                <FaPhone />
+              </a>
+            </div>
+
+            <div style={{...styles.btnRow, transform: 'translateZ(70px)'}} className="btnRow">
+              <Link to="projects" smooth={true} duration={600} offset={-70} className="btn-primary">
+                View Projects
+              </Link>
+              <Link to="contact" smooth={true} duration={600} offset={-70} className="btn-outline">
+                Contact Me
+              </Link>
+            </div>
+
+            <div style={{...styles.resumeRow, transform: 'translateZ(60px)'}} className="resumeRow">
+              <a href="https://drive.google.com/file/d/1nl7qPbkplH2FOEbTzKX0fWP9o6HzJwQ2/view?usp=sharing" target="_blank" rel="noreferrer" className="btn-glass">
+                📄 Full Stack Resume
+              </a>
+              <a href="https://drive.google.com/file/d/1oCS2oqxTIAb8CgYOMK-sQoIzV2DyXRRZ/view?usp=sharing" target="_blank" rel="noreferrer" className="btn-glass">
+                📄 QA Resume
+              </a>
             </div>
           </div>
-        </div>
 
+          {/* Right Side — Massive 3D Photo & Orbit */}
+          <div style={{ ...styles.photoSide, transformStyle: 'preserve-3d' }} data-aos="fade-left">
+            <div className="photo-container">
+              
+              {/* Deep Space Orbiting Ring */}
+              <div className="orbit-ring">
+                <div className="orbit-badge badge-1">☕ Java Dev</div>
+                <div className="orbit-badge badge-2">⚛️ React Dev</div>
+                <div className="orbit-badge badge-3">🧪 QA Engineer</div>
+              </div>
+
+              {/* The Floating 3D Photo */}
+              <div className="photo-border">
+                {/* Dynamic Lighting Glare */}
+                <div 
+                  className="photo-glare"
+                  style={{
+                    opacity: 0.3 + (globalTilt.x + globalTilt.y) * 0.02
+                  }}
+                ></div>
+                <img src={vivekananda} alt="Vivekananda Mohanty" className="photo-img" />
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       {/* Scroll Down Indicator */}
