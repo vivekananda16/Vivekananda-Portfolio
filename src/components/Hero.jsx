@@ -129,7 +129,7 @@ const Hero = () => {
 
           /* Shining Text Effect */
           .hero-name {
-            font-size: 4.5rem;
+            font-size: clamp(2.5rem, 5vw + 1rem, 4.5rem);
             font-weight: 900;
             background: linear-gradient(to right, var(--text) 20%, var(--primary) 40%, var(--primary) 60%, var(--text) 80%);
             background-size: 200% auto;
@@ -140,6 +140,12 @@ const Hero = () => {
             margin-bottom: 20px;
             line-height: 1.1;
             text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding-right: 20px; /* Prevent WebKit text-shadow clipping */
+            padding-bottom: 20px;
+            margin-right: -20px; /* Offset padding */
+            margin-bottom: -20px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
           }
           @keyframes shineText { 
             to { background-position: 200% center; } 
@@ -337,7 +343,11 @@ const Hero = () => {
               gap: 40px !important;
               padding-top: 20px !important;
             }
-            .hero-name { font-size: 3rem !important; }
+            .hero-name { 
+              font-size: clamp(2rem, 8vw, 3rem) !important; 
+              padding-right: 10px;
+              margin-right: 0;
+            }
             .titleWrapper { justify-content: center; }
             .hero-tagline { margin: 0 auto 30px !important; }
             .socials, .btnRow, .resumeRow { justify-content: center; }
