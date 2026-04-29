@@ -61,8 +61,9 @@ const ParticleBackground = () => {
     const windowHalfY = window.innerHeight / 2;
 
     const onDocumentMouseMove = (event) => {
-      mouseX = (event.clientX - windowHalfX) * 0.05;
-      mouseY = (event.clientY - windowHalfY) * 0.05;
+      // Scale mouse coordinates to match the 3D terrain space
+      mouseX = (event.clientX - windowHalfX) * 3;
+      mouseY = (event.clientY - windowHalfY) * 3;
     };
     document.addEventListener('mousemove', onDocumentMouseMove);
 
@@ -81,51 +82,58 @@ const ParticleBackground = () => {
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       
-      const time = clock.getElapsedTime() * 0.5; // Global simulation time
+      const time = clock.getElapsedTime() * 0.8; // Global simulation time
       
-      // Grab arrays to mutate
       const posArray = particles.geometry.attributes.position.array;
       const colArray = particles.geometry.attributes.color.array;
 
-      // Mathematical logic for shaping the swarm
+      // --- MAGICAL CYBER SEA ---
+      // A vast, undulating ocean of data that reacts to the mouse
+      const gridSize = Math.ceil(Math.sqrt(particleCount)); // ~142
+      
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         
-        // Stable pseudo-random values
-        const r1 = ((i * 13) % 1000) / 1000;
-        const r2 = ((i * 17) % 1000) / 1000;
-        const r3 = ((i * 19) % 1000) / 1000;
-
-        // --- ELEGANT GALAXY SWIRL ---
-        const arms = 5; // 5 spiral arms
-        const radius = Math.pow(r1, 1.5) * 800; // Concentrate particles near the center
-        const armOffset = (i % arms) * (Math.PI * 2 / arms);
-        const spiralAngle = r1 * Math.PI * 4; // The twist of the galaxy
+        // 2D Grid coordinates mapped to a massive 3D plane
+        const ix = i % gridSize;
+        const iz = Math.floor(i / gridSize);
         
-        // Rotate slowly over time
-        const theta = armOffset + spiralAngle + time * 0.15;
+        // Spread particles out from -1500 to +1500
+        const x = (ix / gridSize - 0.5) * 3000;
+        const z = (iz / gridSize - 0.5) * 3000;
         
-        // Z-axis spread: thicker at the center, tapering at the edges
-        const heightSpread = Math.pow(1 - r1, 2) * 150 * (r2 - 0.5);
+        // Complex mathematical waves
+        const distFromCenter = Math.sqrt(x*x + z*z);
+        const wave1 = Math.sin(x * 0.003 + time) * 80;
+        const wave2 = Math.cos(z * 0.002 - time * 0.5) * 100;
+        const wave3 = Math.sin(distFromCenter * 0.005 - time) * 120;
         
-        // Organic chaos / stardust drift
-        const chaos = r3 * 40 * r1;
-
-        const x = Math.cos(theta) * radius + Math.cos(time * 0.5 + i) * chaos;
-        const z = Math.sin(theta) * radius + Math.sin(time * 0.5 + i) * chaos;
-        const y = heightSpread + Math.sin(time * 0.3 + r1 * 10) * 15;
+        // --- THE MAGIC (Interactive Mouse Magnet) ---
+        // Mouse pulls the glowing terrain up like a magnetic field
+        // Note: Y is flipped in 2D mouse space vs 3D
+        const dx = x - mouseX;
+        const dz = z - mouseY;
+        const distToMouse = Math.sqrt(dx*dx + dz*dz);
+        const magneticLift = Math.max(0, 400 - distToMouse) * 0.8;
+        
+        // Final Y position combining waves and mouse interaction
+        const y = wave1 + wave2 + wave3 + magneticLift - 300;
 
         posArray[i3] = x;
-        posArray[i3 + 1] = y; // Y is up/down in ThreeJS
+        posArray[i3 + 1] = y;
         posArray[i3 + 2] = z;
 
-        // --- DYNAMIC COLORING ---
-        // Core is cyan/teal (0.5), edges fade to deep blue/purple (0.7)
-        const hue = 0.5 + r1 * 0.2 + Math.sin(time * 0.1 + r2) * 0.05;
-        // Bright in center, darker at edges, with a soft pulse
-        const lightness = 0.7 - (r1 * 0.5) + (Math.sin(time * 2 + i * 0.01) * 0.15);
+        // --- MAGICAL COLORING ---
+        // Color shifts from Matrix Green to Holographic Cyan based on height
+        const heightRatio = Math.max(0, Math.min(1, (y + 500) / 800)); // Normalize height
         
-        colorHelper.setHSL(hue, 0.9, lightness);
+        const hue = 0.35 + heightRatio * 0.15; // 0.35 = Green, 0.5 = Cyan
+        
+        // Brighten significantly if lifted by the mouse
+        const isLifted = magneticLift > 10;
+        const lightness = 0.2 + (heightRatio * 0.5) + (isLifted ? 0.3 : 0) + (Math.sin(time * 3 + i) * 0.1);
+        
+        colorHelper.setHSL(hue, 1.0, lightness);
         
         colArray[i3] = colorHelper.r;
         colArray[i3 + 1] = colorHelper.g;
@@ -135,14 +143,10 @@ const ParticleBackground = () => {
       particles.geometry.attributes.position.needsUpdate = true;
       particles.geometry.attributes.color.needsUpdate = true;
 
-      // Smooth camera follow
-      camera.position.x += (mouseX - camera.position.x) * 0.05;
-      camera.position.y += (-mouseY - camera.position.y) * 0.05;
-      camera.lookAt(scene.position);
-      
-      // Global rotation
-      particles.rotation.y = time * 0.1;
-      particles.rotation.z = time * 0.05;
+      // Slow cinematic camera drift
+      camera.position.x = Math.sin(time * 0.1) * 200;
+      camera.position.y = 200 + Math.cos(time * 0.1) * 100;
+      camera.lookAt(0, -200, 0);
 
       renderer.render(scene, camera);
     };
