@@ -167,15 +167,15 @@ const Hero = () => {
           .holo-card-container {
             perspective: 2000px;
             z-index: 10;
-            width: 340px;
-            height: 420px;
+            width: 480px;
+            height: 560px;
             display: flex;
             justify-content: center;
             align-items: center;
           }
           .holo-card {
-            width: 300px;
-            height: 380px;
+            width: 440px;
+            height: 520px;
             border-radius: 20px;
             position: relative;
             transform-style: preserve-3d;
@@ -226,7 +226,7 @@ const Hero = () => {
           .magical-orbit {
             position: absolute;
             top: 50%; left: 50%;
-            width: 480px; height: 480px;
+            width: 650px; height: 650px;
             transform: translate(-50%, -50%);
             border: 2px dashed rgba(26, 122, 74, 0.3);
             border-radius: 50%;
@@ -524,8 +524,8 @@ const styles = {
     zIndex: 2,
   },
   textSide: {
-    flex: 1,
-    minWidth: '320px',
+    flex: 1.2,
+    minWidth: '400px',
     zIndex: 2,
   },
   titleWrapper: {
@@ -554,7 +554,7 @@ const styles = {
     color: 'var(--text-muted)',
     lineHeight: 1.7,
     marginBottom: '30px',
-    maxWidth: '500px',
+    maxWidth: '650px',
   },
   socials: {
     display: 'flex',
