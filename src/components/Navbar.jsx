@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-scroll';
-import { FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 const Navbar = ({ theme, toggleTheme }) => {
     const [scrolled, setScrolled] = useState(false);
@@ -214,13 +214,7 @@ const Navbar = ({ theme, toggleTheme }) => {
 
                 {/* Right Side — Theme Toggle + Hamburger */}
                 <div style={styles.rightSide}>
-                    {/* Theme Toggle */}
-                    <button onClick={toggleTheme} className="theme-btn-glow">
-                        {theme === 'dark'
-                            ? <FaSun style={{ color: '#f39c12', fontSize: '18px' }} />
-                            : <FaMoon style={{ color: '#1a7a4a', fontSize: '18px' }} />
-                        }
-                    </button>
+
 
                     {/* Hamburger for mobile */}
                     <button
