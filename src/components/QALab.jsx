@@ -291,7 +291,7 @@ const QALab = () => {
                         <div 
                             className="cube" 
                             style={{ 
-                                transform: \`translateZ(-150px) \${currentContent.rotation} rotateX(\${mousePos.y}deg) rotateY(\${mousePos.x}deg)\`
+                                transform: `translateZ(-150px) ${currentContent.rotation} rotateX(${mousePos.y}deg) rotateY(${mousePos.x}deg)`
                             }}
                         >
                             <div className="cube-face front">
@@ -325,7 +325,7 @@ const QALab = () => {
                         {faces.map((face, index) => (
                             <button 
                                 key={index} 
-                                className={\`ctrl-btn \${activeFace === index ? 'active' : ''}\`}
+                                className={`ctrl-btn ${activeFace === index ? 'active' : ''}`}
                                 onClick={() => setActiveFace(index)}
                                 title={face.title}
                             >
