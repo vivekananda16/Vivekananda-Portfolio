@@ -130,8 +130,11 @@ const Contact = () => {
 
           /* Call to Action Block */
           .cta-container {
-            background: linear-gradient(135deg, rgba(26, 122, 74, 0.1) 0%, rgba(26, 122, 74, 0.02) 100%);
-            border: 1px solid var(--border);
+            background: rgba(26, 122, 74, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(26, 122, 74, 0.3);
+            box-shadow: 0 15px 35px rgba(26, 122, 74, 0.1);
             border-radius: 20px;
             padding: 50px 40px;
             display: flex;

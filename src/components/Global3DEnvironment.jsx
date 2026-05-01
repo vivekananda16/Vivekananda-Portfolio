@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Stars, PointMaterial, Points } from '@react-three/drei';
+import { Stars, PointMaterial, Points, Float, Icosahedron, TorusKnot, MeshDistortMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Global morphing states based on scroll progression
@@ -10,6 +10,7 @@ const SECTION_STATES = [
         fogColor: new THREE.Color('#0a0510'), 
         lightColor: new THREE.Color('#bc00ff'), 
         particleColor: new THREE.Color('#ffffff'), 
+        geometryColor: new THREE.Color('#3a0088'),
         particleSize: 0.05,
         speed: 1
     },
@@ -18,6 +19,7 @@ const SECTION_STATES = [
         fogColor: new THREE.Color('#051020'), 
         lightColor: new THREE.Color('#00f3ff'), 
         particleColor: new THREE.Color('#00f3ff'), 
+        geometryColor: new THREE.Color('#004488'),
         particleSize: 0.03,
         speed: 0.5
     },
@@ -26,6 +28,7 @@ const SECTION_STATES = [
         fogColor: new THREE.Color('#100020'), 
         lightColor: new THREE.Color('#ff003c'), 
         particleColor: new THREE.Color('#bc00ff'), 
+        geometryColor: new THREE.Color('#880022'),
         particleSize: 0.08,
         speed: 2
     },
@@ -34,6 +37,7 @@ const SECTION_STATES = [
         fogColor: new THREE.Color('#050505'), 
         lightColor: new THREE.Color('#f39c12'), 
         particleColor: new THREE.Color('#f39c12'), 
+        geometryColor: new THREE.Color('#884400'),
         particleSize: 0.02,
         speed: 0.3
     },
@@ -42,6 +46,7 @@ const SECTION_STATES = [
         fogColor: new THREE.Color('#021008'), 
         lightColor: new THREE.Color('#00ff88'), 
         particleColor: new THREE.Color('#00ff88'), 
+        geometryColor: new THREE.Color('#008844'),
         particleSize: 0.04,
         speed: 1.5
     },
@@ -50,6 +55,7 @@ const SECTION_STATES = [
         fogColor: new THREE.Color('#151520'), 
         lightColor: new THREE.Color('#ffffff'), 
         particleColor: new THREE.Color('#00f3ff'), 
+        geometryColor: new THREE.Color('#222244'),
         particleSize: 0.06,
         speed: 1
     },
@@ -58,6 +64,7 @@ const SECTION_STATES = [
         fogColor: new THREE.Color('#000000'), 
         lightColor: new THREE.Color('#ffffff'), 
         particleColor: new THREE.Color('#ffffff'), 
+        geometryColor: new THREE.Color('#222222'),
         particleSize: 0.05,
         speed: 0.5
     }
@@ -67,6 +74,11 @@ const DynamicEnvironment = () => {
     const { scene, camera } = useThree();
     const particlesRef = useRef();
     const lightRef = useRef();
+    
+    // Refs for our new 3D floating geometries
+    const geoMatRef1 = useRef();
+    const geoMatRef2 = useRef();
+    const mainGroupRef = useRef();
     
     // Create random particles globally distributed
     const particleCount = 2000;
@@ -122,6 +134,21 @@ const DynamicEnvironment = () => {
             particlesRef.current.rotation.x -= 0.0005 * currentSpeed;
         }
 
+        // Interpolate Geometry Colors
+        if (geoMatRef1.current) {
+            geoMatRef1.current.color.lerpColors(state1.geometryColor, state2.geometryColor, lerpFactor);
+        }
+        if (geoMatRef2.current) {
+            geoMatRef2.current.color.lerpColors(state1.geometryColor, state2.geometryColor, lerpFactor);
+            geoMatRef2.current.emissive.lerpColors(state1.geometryColor, state2.geometryColor, lerpFactor);
+        }
+
+        // Rotate the entire geometry group slightly based on scroll
+        if (mainGroupRef.current) {
+            mainGroupRef.current.rotation.y = progress * Math.PI * 2;
+            mainGroupRef.current.rotation.x = progress * Math.PI;
+        }
+
         // Camera movement logic: Fly deeply into the scene as we scroll
         const t = state.clock.getElapsedTime();
         const targetZ = 5 - progress * 20; // Dive deeper into the space
@@ -137,6 +164,39 @@ const DynamicEnvironment = () => {
             <directionalLight ref={lightRef} position={[10, 10, 5]} intensity={2} />
             <pointLight position={[-10, -10, -5]} intensity={1} color="#00f3ff" />
             
+            {/* Morphing Floating Geometries Group */}
+            <group ref={mainGroupRef}>
+                <Float speed={2} rotationIntensity={1.5} floatIntensity={2} position={[-4, 2, -8]}>
+                    <Icosahedron args={[1.5, 0]}>
+                        <meshStandardMaterial ref={geoMatRef1} wireframe color="#3a0088" transparent opacity={0.6} />
+                    </Icosahedron>
+                </Float>
+                <Float speed={1.5} rotationIntensity={2} floatIntensity={1.5} position={[5, -2, -12]}>
+                    <TorusKnot args={[1.2, 0.3, 100, 16]}>
+                        <MeshDistortMaterial 
+                            ref={geoMatRef2} 
+                            distort={0.4} 
+                            speed={2} 
+                            color="#3a0088" 
+                            emissive="#3a0088" 
+                            emissiveIntensity={0.5} 
+                            roughness={0.2} 
+                            metalness={0.8} 
+                        />
+                    </TorusKnot>
+                </Float>
+                <Float speed={1} rotationIntensity={1} floatIntensity={3} position={[0, -5, -16]}>
+                    <Icosahedron args={[4, 1]}>
+                        <meshStandardMaterial wireframe color="#ffffff" transparent opacity={0.05} />
+                    </Icosahedron>
+                </Float>
+                <Float speed={2.5} rotationIntensity={3} floatIntensity={2} position={[-6, -4, -20]}>
+                    <TorusKnot args={[2, 0.1, 64, 8]}>
+                        <meshStandardMaterial wireframe color="#00f3ff" transparent opacity={0.2} />
+                    </TorusKnot>
+                </Float>
+            </group>
+
             <Points ref={particlesRef} positions={positions} stride={3} frustumCulled={false}>
                 <PointMaterial transparent color="#ffffff" size={0.05} sizeAttenuation={true} depthWrite={false} blending={THREE.AdditiveBlending} />
             </Points>

@@ -172,22 +172,40 @@ const Hero = () => {
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
           }
           .holo-card {
-            width: 440px;
-            height: 520px;
-            border-radius: 20px;
+            width: 420px;
+            height: 500px;
+            border-radius: 24px;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
-            background: rgba(18, 18, 18, 0.6);
+            background: rgba(10, 10, 15, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
+          }
+          .holo-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), #00f3ff, #bc00ff, var(--primary));
+            background-size: 300% 300%;
+            border-radius: 26px;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(10px);
+            animation: pulseGlow 6s ease-in-out infinite alternate;
+          }
+          @keyframes pulseGlow {
+            0% { background-position: 0% 50%; opacity: 0.4; filter: blur(8px); }
+            50% { background-position: 100% 50%; opacity: 0.7; filter: blur(14px); }
+            100% { background-position: 0% 50%; opacity: 0.4; filter: blur(8px); }
           }
           .holo-card.hovered {
             box-shadow: 
-              0 30px 60px -12px rgba(0,0,0,0.8),
-              0 0 40px rgba(26, 122, 74, 0.4);
+              0 30px 60px -12px rgba(0,0,0,0.9),
+              0 0 50px rgba(0, 243, 255, 0.3);
           }
           
           /* The floating image inside the card */
@@ -195,21 +213,21 @@ const Hero = () => {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: top;
-            border-radius: 19px;
-            transform: translateZ(40px) scale(0.92);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            transition: transform 0.3s ease;
+            object-position: center 10%;
+            border-radius: 23px;
+            transform: translateZ(50px) scale(1.08); /* Zoomed picture */
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
           }
           .holo-card.hovered .holo-img {
-            transform: translateZ(70px) scale(0.95);
+            transform: translateZ(80px) scale(1.12); /* More zoom on hover */
           }
           
           /* Dynamic Holographic Foil Glare */
           .holo-glare {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 20px;
+            border-radius: 24px;
             background: radial-gradient(
               circle at var(--glow-x) var(--glow-y), 
               rgba(255, 255, 255, 0.8) 0%, 
@@ -219,57 +237,68 @@ const Hero = () => {
             opacity: var(--glow-opacity);
             transition: opacity 0.4s ease;
             pointer-events: none;
-            transform: translateZ(41px); /* Just above the image */
+            transform: translateZ(51px);
           }
 
-          /* Glowing Orbital Ring */
+          /* Modern Decorative Ring */
           .magical-orbit {
             position: absolute;
             top: 50%; left: 50%;
-            width: 650px; height: 650px;
+            width: 580px; height: 580px;
             transform: translate(-50%, -50%);
-            border: 2px dashed rgba(26, 122, 74, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 50%;
-            animation: slowSpin 30s linear infinite;
             pointer-events: none;
-            box-shadow: inset 0 0 50px rgba(26, 122, 74, 0.1);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.05), inset 0 0 40px rgba(188, 0, 255, 0.05);
           }
-          @keyframes slowSpin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+          .magical-orbit::after {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 1px dashed rgba(0, 243, 255, 0.3);
+            border-radius: 50%;
+            animation: slowSpin 40s linear infinite;
+          }
+          @keyframes slowSpin { 100% { transform: rotate(360deg); } }
 
-          /* Glass Badges */
+          /* Glass Tech Badges */
           .magic-badge {
             position: absolute;
-            background: rgba(20, 20, 20, 0.85);
-            border: 1px solid var(--primary);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
+            background: rgba(15, 15, 20, 0.85);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            color: #e0e0e0;
+            padding: 12px 22px;
+            border-radius: 12px;
             font-size: 0.95rem;
-            font-weight: 800;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 0 15px rgba(26, 122, 74, 0.5);
-            animation: counterSpin 30s linear infinite;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 0 15px rgba(0, 243, 255, 0.1);
             pointer-events: auto;
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
+            backdrop-filter: blur(16px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: default;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 20;
           }
           .light .magic-badge {
             background: rgba(255, 255, 255, 0.9);
             color: var(--text);
+            border-color: rgba(0, 0, 0, 0.1);
           }
           .magic-badge:hover {
-            transform: scale(1.1) !important;
-            background: var(--primary);
+            transform: translateY(-8px) scale(1.05);
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(188, 0, 255, 0.15));
+            border-color: #00f3ff;
             color: #fff;
-            box-shadow: 0 0 30px var(--primary);
-            animation-play-state: paused;
+            box-shadow: 0 20px 40px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.3);
           }
-          @keyframes counterSpin { 100% { transform: rotate(-360deg); } }
           
-          /* Positions on the ring */
-          .badge-1 { top: -20px; left: 50%; margin-left: -60px; }
-          .badge-2 { bottom: 60px; right: -30px; }
-          .badge-3 { bottom: 60px; left: -30px; }
+          /* Static Positions around the card */
+          .badge-1 { top: 30px; left: -60px; }
+          .badge-2 { top: 220px; right: -80px; }
+          .badge-3 { bottom: 40px; left: -40px; }
           
           .social-link-hover:hover {
             background: var(--primary) !important;
@@ -353,25 +382,26 @@ const Hero = () => {
             .socials, .btnRow, .resumeRow { justify-content: center; }
             
             .holo-card-container {
-              width: 260px !important;
-              height: 340px !important;
+              width: 300px !important;
+              height: 380px !important;
+              margin-top: 40px;
             }
             .holo-card {
-              width: 240px !important;
-              height: 300px !important;
+              width: 280px !important;
+              height: 360px !important;
               transform: none !important; /* Disable 3D tilt on mobile */
             }
             .magical-orbit {
-              width: 340px !important;
-              height: 340px !important;
+              width: 380px !important;
+              height: 380px !important;
             }
             .magic-badge {
-              font-size: 0.75rem !important;
-              padding: 6px 12px !important;
+              font-size: 0.8rem !important;
+              padding: 8px 14px !important;
             }
-            .badge-1 { top: -10px !important; }
-            .badge-2 { bottom: 40px !important; right: -10px !important; }
-            .badge-3 { bottom: 40px !important; left: -10px !important; }
+            .badge-1 { top: -20px !important; left: 10px !important; }
+            .badge-2 { top: 150px !important; right: -20px !important; }
+            .badge-3 { bottom: -20px !important; left: 20px !important; }
           }
         `}
       </style>
@@ -450,12 +480,13 @@ const Hero = () => {
         <div style={styles.photoSide} data-aos="fade-left">
           <div className="holo-card-container">
             
-            {/* Slow Glowing Orbital Ring */}
-            <div className="magical-orbit">
-              <div className="magic-badge badge-1">☕ Java Dev</div>
-              <div className="magic-badge badge-2">⚛️ React Dev</div>
-              <div className="magic-badge badge-3">🧪 QA Engineer</div>
-            </div>
+            {/* Modern Decorative Ring */}
+            <div className="magical-orbit"></div>
+
+            {/* Static Tech Badges */}
+            <div className="magic-badge badge-1">☕ Java Dev</div>
+            <div className="magic-badge badge-2">⚛️ React Dev</div>
+            <div className="magic-badge badge-3">🧪 QA Engineer</div>
 
             {/* The Interactive Holographic Card */}
             <div 
