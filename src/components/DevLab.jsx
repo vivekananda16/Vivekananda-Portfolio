@@ -340,8 +340,8 @@ const DevLab = () => {
             <div className="code-particles"></div>
 
             <div className="lab-header" data-aos="fade-down">
-                <p className="section-subtitle" style={{ color: '#00f3ff' }}>Creative Engineering</p>
-                <h2 className="section-title">Development <span style={{ color: '#00f3ff' }}>Lab</span></h2>
+                <p className="section-subtitle" style={{ color: 'var(--primary)' }}>Creative Engineering</p>
+                <h2 className="section-title">Development <span style={{ color: 'var(--primary)' }}>Lab</span></h2>
                 <p style={{ color: '#aaa', marginTop: '10px' }}>Where ideas turn into scalable web applications.</p>
             </div>
 
