@@ -9,6 +9,7 @@ import Certifications from './components/Certifications';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ParticleBackground from './components/ParticleBackground';
+import QALab from './components/QALab';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -40,6 +41,7 @@ function App() {
       <Skills />
       <Projects />
       <Certifications />
+      <QALab />
       <Contact />
       <Footer />
     </div>
