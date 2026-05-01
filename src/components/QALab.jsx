@@ -267,76 +267,79 @@ const QALab = () => {
                     position: relative;
                     text-align: center;
                     margin-top: 100px;
-                    padding: 60px 30px;
-                    background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(10,30,20,0.9) 50%, rgba(0,0,0,0.8) 100%);
-                    border-top: 2px solid var(--primary);
-                    border-bottom: 2px solid var(--primary);
+                    padding: 40px 30px;
+                    background: transparent;
+                    border-left: 3px solid var(--primary);
+                    max-width: 800px;
+                    margin-left: auto;
+                    margin-right: auto;
                     z-index: 2;
-                    overflow: hidden;
-                    box-shadow: 0 0 40px rgba(26, 122, 74, 0.2), inset 0 0 20px rgba(26, 122, 74, 0.1);
-                    animation: adrenalinePulse 1.5s infinite alternate;
+                    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                  }
+                  .mission-panel:hover {
+                    transform: scale(1.05) translateY(-5px);
+                    background: rgba(26, 122, 74, 0.05);
+                    box-shadow: 0 15px 30px rgba(26, 122, 74, 0.1);
+                    border-left: 5px solid var(--primary);
+                    border-radius: 0 20px 20px 0;
                   }
                   .mission-panel::before {
                     content: 'OVERDRIVE PROTOCOL';
                     position: absolute;
                     top: 50%; left: 50%;
                     transform: translate(-50%, -50%);
-                    font-size: 7rem;
+                    font-size: 5rem;
                     font-weight: 900;
-                    color: rgba(26, 122, 74, 0.05);
+                    color: rgba(26, 122, 74, 0.03);
                     white-space: nowrap;
                     z-index: -1;
                     pointer-events: none;
                     letter-spacing: 15px;
                   }
-                  .mission-panel::after {
-                    content: '';
-                    position: absolute;
-                    top: 0; left: -100%;
-                    width: 50%; height: 100%;
-                    background: linear-gradient(90deg, transparent, rgba(26, 122, 74, 0.3), transparent);
-                    transform: skewX(-45deg);
-                    animation: adrenalineSweep 2.5s infinite linear;
-                  }
                   .mission-title {
-                    font-size: 2.5rem;
+                    font-size: 1.5rem;
                     color: #fff;
-                    margin-bottom: 15px;
+                    margin-bottom: 10px;
                     font-weight: 900;
                     text-transform: uppercase;
-                    letter-spacing: 6px;
-                    text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary);
-                    animation: textGlitch 3s infinite;
+                    letter-spacing: 4px;
+                    text-shadow: 0 0 10px var(--primary);
                   }
                   .mission-text {
-                    color: #fff;
-                    font-size: 1.3rem;
-                    font-weight: 600;
-                    letter-spacing: 2px;
+                    color: #ccc;
+                    font-size: 1.1rem;
+                    font-weight: 400;
+                    letter-spacing: 1.5px;
                     max-width: 800px;
                     margin: 0 auto;
                     line-height: 1.6;
-                    text-transform: uppercase;
+                    font-style: italic;
+                    position: relative;
+                    display: inline-block;
+                  }
+                  .mission-text::before {
+                    content: '"';
+                    font-size: 3rem;
+                    color: rgba(26, 122, 74, 0.4);
+                    position: absolute;
+                    top: -15px; left: -25px;
+                    font-family: serif;
+                  }
+                  .mission-text::after {
+                    content: '"';
+                    font-size: 3rem;
+                    color: rgba(26, 122, 74, 0.4);
+                    position: absolute;
+                    bottom: -30px; right: -25px;
+                    font-family: serif;
                   }
                   .mission-highlight {
                     color: #fff;
-                    text-shadow: 0 0 10px var(--primary), 0 0 20px #fff;
+                    font-weight: 600;
+                    font-style: normal;
+                    text-shadow: 0 0 10px var(--primary);
                   }
-                  @keyframes adrenalinePulse {
-                    0% { box-shadow: 0 0 30px rgba(26, 122, 74, 0.1), inset 0 0 10px rgba(26, 122, 74, 0.1); border-color: rgba(26, 122, 74, 0.5); }
-                    100% { box-shadow: 0 0 80px rgba(26, 122, 74, 0.5), inset 0 0 40px rgba(26, 122, 74, 0.3); border-color: var(--primary); }
-                  }
-                  @keyframes adrenalineSweep {
-                    0% { left: -100%; }
-                    100% { left: 200%; }
-                  }
-                  @keyframes textGlitch {
-                    0%, 100% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); opacity: 1; }
-                    92% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); opacity: 1; }
-                    94% { text-shadow: none; opacity: 0.8; transform: translateX(-2px); }
-                    96% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); opacity: 1; transform: translateX(2px); }
-                    98% { text-shadow: none; opacity: 0.9; transform: translateX(0); }
-                  }
+
                 `}
             </style>
 

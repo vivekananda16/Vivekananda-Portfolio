@@ -286,23 +286,54 @@ const DevLab = () => {
                   .dev-final-panel {
                     text-align: center;
                     margin-top: 80px;
-                    padding: 40px;
-                    background: rgba(10, 15, 20, 0.8);
-                    border-top: 1px solid #333;
+                    padding: 30px 40px;
+                    background: transparent;
+                    border-left: 3px solid #00f3ff;
                     position: relative;
                     z-index: 3;
-                    backdrop-filter: blur(10px);
+                    max-width: 800px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                  }
+                  .dev-final-panel:hover {
+                    transform: scale(1.05) translateY(-5px);
+                    background: rgba(0, 243, 255, 0.05);
+                    box-shadow: 0 15px 30px rgba(0, 243, 255, 0.1);
+                    border-left: 5px solid #00f3ff;
+                    border-radius: 0 20px 20px 0;
                   }
                   .dev-final-text {
-                    font-size: 1.5rem;
-                    color: #fff;
-                    font-weight: 600;
-                    letter-spacing: 2px;
+                    font-size: 1.2rem;
+                    color: #ccc;
+                    font-weight: 400;
+                    letter-spacing: 1.5px;
+                    font-style: italic;
+                    position: relative;
+                    display: inline-block;
+                  }
+                  .dev-final-text::before {
+                    content: '"';
+                    font-size: 3rem;
+                    color: rgba(0, 243, 255, 0.3);
+                    position: absolute;
+                    top: -15px; left: -25px;
+                    font-family: serif;
+                  }
+                  .dev-final-text::after {
+                    content: '"';
+                    font-size: 3rem;
+                    color: rgba(0, 243, 255, 0.3);
+                    position: absolute;
+                    bottom: -30px; right: -25px;
+                    font-family: serif;
                   }
                   .highlight-text {
                     background: linear-gradient(90deg, #00f3ff, #bc00ff);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
+                    font-weight: 600;
+                    font-style: normal;
                   }
                 `}
             </style>
