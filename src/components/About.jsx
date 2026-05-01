@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaMapMarkerAlt, FaGraduationCap, FaBriefcase, FaHeart } from 'react-icons/fa';
-import profilePhoto from '../assets/vivekananda.webp';
+import profilePhoto from '../assets/about-photo.jpg';
 
 const About = () => {
     return (
@@ -246,7 +246,7 @@ const About = () => {
                     top: 0; left: 0; right: 0; bottom: 0;
                     width: 100%;
                     height: 100%;
-                    object-fit: cover;
+                    object-fit: contain;
                     border-radius: inherit;
                     opacity: 0;
                     z-index: 20;
