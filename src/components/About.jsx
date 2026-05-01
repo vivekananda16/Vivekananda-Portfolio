@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaMapMarkerAlt, FaGraduationCap, FaBriefcase, FaHeart } from 'react-icons/fa';
+import profilePhoto from '../assets/vivekananda.webp';
 
 const About = () => {
     return (
@@ -239,6 +240,28 @@ const About = () => {
                     100% { transform: rotateX(75deg) rotateY(15deg) rotateZ(0deg); }
                   }
                   
+                  /* Magic Photo Reveal */
+                  .art-photo {
+                    position: absolute;
+                    top: 0; left: 0; right: 0; bottom: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: inherit;
+                    opacity: 0;
+                    z-index: 20;
+                    pointer-events: none;
+                  }
+                  .box-art:hover .art-photo {
+                    animation: magicReveal 7s ease forwards;
+                  }
+                  @keyframes magicReveal {
+                    0%   { opacity: 0; filter: blur(10px); transform: scale(0.9); }
+                    15%  { opacity: 1; filter: blur(0px); transform: scale(1); }
+                    85%  { opacity: 1; filter: blur(0px); transform: scale(1); }
+                    100% { opacity: 0; filter: blur(10px); transform: scale(1.05); }
+                  }
+
                   /* Background floating elements in Bio box */
                   .bio-bg-element {
                     position: absolute;
@@ -293,6 +316,7 @@ const About = () => {
                             <div className="art-ring-1"></div>
                             <div className="art-ring-2"></div>
                             <div className="art-ring-3"></div>
+                            <img src={profilePhoto} alt="Vivekananda" className="art-photo" />
                         </div>
                     </div>
 
