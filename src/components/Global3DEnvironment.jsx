@@ -101,10 +101,14 @@ const DynamicEnvironment = () => {
         const state2 = SECTION_STATES[index2];
 
         // Interpolate Background Fog & Lighting
-        scene.fog.color.lerpColors(state1.fogColor, state2.fogColor, lerpFactor);
-        lightRef.current.color.lerpColors(state1.lightColor, state2.lightColor, lerpFactor);
+        if (scene.fog) {
+            scene.fog.color.lerpColors(state1.fogColor, state2.fogColor, lerpFactor);
+        }
+        if (lightRef.current) {
+            lightRef.current.color.lerpColors(state1.lightColor, state2.lightColor, lerpFactor);
+        }
         
-        if (particlesRef.current) {
+        if (particlesRef.current && particlesRef.current.material) {
             // Interpolate Particle Color
             particlesRef.current.material.color.lerpColors(state1.particleColor, state2.particleColor, lerpFactor);
             
