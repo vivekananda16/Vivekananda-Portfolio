@@ -261,9 +261,9 @@ const Navbar = ({ theme, toggleTheme }) => {
 
 const styles = {
     container: {
-        maxWidth: '1100px',
+        maxWidth: '100%',
         margin: '0 auto',
-        padding: '16px 24px',
+        padding: '16px 5%',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

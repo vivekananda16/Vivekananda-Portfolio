@@ -263,7 +263,7 @@ const Skills = () => {
             gap: 20px;
             justify-content: center;
             align-items: center;
-            max-width: 600px;
+            max-width: 100%;
             position: relative;
             z-index: 1;
           }

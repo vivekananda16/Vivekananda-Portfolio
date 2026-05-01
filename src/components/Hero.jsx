@@ -512,9 +512,9 @@ const styles = {
     paddingTop: '80px',
   },
   container: {
-    maxWidth: '1100px',
+    maxWidth: '100%',
     margin: '0 auto',
-    padding: '40px 24px',
+    padding: '40px 5%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',

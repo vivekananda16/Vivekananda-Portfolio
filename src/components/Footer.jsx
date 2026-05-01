@@ -37,9 +37,9 @@ const Footer = () => {
             z-index: 10;
           }
           .footer-container {
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 5%;
             display: flex;
             flex-direction: column;
             align-items: center;
