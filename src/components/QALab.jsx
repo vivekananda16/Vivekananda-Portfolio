@@ -202,13 +202,12 @@ const QALab = () => {
                     min-width: 320px;
                     max-width: 500px;
                     background: rgba(25, 25, 25, 0.6);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
                     backdrop-filter: blur(15px);
                     border-radius: 20px;
                     padding: 40px;
-                    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
                     position: relative;
                     overflow: hidden;
+                    transition: all 0.5s ease;
                   }
                   .glass-panel::before {
                     content: '';
@@ -448,7 +447,14 @@ const QALab = () => {
                 </div>
 
                 {/* GLASS PANEL */}
-                <div className="glass-panel" data-aos="fade-left">
+                <div 
+                    className="glass-panel" 
+                    data-aos="fade-left"
+                    style={{ 
+                        border: `2px solid ${currentContent.color}`, 
+                        boxShadow: `0 0 30px ${currentContent.color}40, inset 0 0 20px ${currentContent.color}11`
+                    }}
+                >
                     <h3 className="panel-title" style={{ color: currentContent.color }}>{currentContent.title}</h3>
                     <p className="panel-tagline">{currentContent.tagline}</p>
                     <p className="panel-desc">{currentContent.description}</p>

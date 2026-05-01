@@ -199,12 +199,9 @@ const DevLab = () => {
                     min-width: 350px;
                     max-width: 550px;
                     background: rgba(15, 15, 20, 0.7);
-                    border: 1px solid rgba(255, 255, 255, 0.05);
-                    border-left: 4px solid;
                     backdrop-filter: blur(20px);
                     border-radius: 15px;
                     padding: 40px;
-                    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
                     position: relative;
                     transition: all 0.5s ease;
                   }
@@ -378,7 +375,10 @@ const DevLab = () => {
                 <div 
                     className="dev-glass-panel" 
                     data-aos="fade-left"
-                    style={{ borderColor: currentContent.color, boxShadow: `0 20px 50px ${currentContent.color}22` }}
+                    style={{ 
+                        border: `2px solid ${currentContent.color}`, 
+                        boxShadow: `0 0 30px ${currentContent.color}40, inset 0 0 20px ${currentContent.color}11`
+                    }}
                 >
                     <h3 className="dev-title" style={{ color: currentContent.color }}>{currentContent.title}</h3>
                     <p className="dev-tagline">{currentContent.tagline}</p>
