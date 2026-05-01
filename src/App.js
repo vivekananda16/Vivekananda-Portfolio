@@ -8,7 +8,7 @@ import Projects from './components/Projects';
 import Certifications from './components/Certifications';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import ParticleBackground from './components/ParticleBackground';
+import Global3DEnvironment from './components/Global3DEnvironment';
 import DevLab from './components/DevLab';
 import QALab from './components/QALab';
 import AOS from 'aos';
@@ -34,7 +34,7 @@ function App() {
 
   return (
     <div className={theme === 'light' ? 'light' : ''}>
-      <ParticleBackground />
+      <Global3DEnvironment />
       
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <Hero />
