@@ -264,13 +264,78 @@ const QALab = () => {
                   }
                   
                   .mission-panel {
+                    position: relative;
                     text-align: center;
-                    margin-top: 80px;
-                    padding: 30px;
-                    background: rgba(26, 122, 74, 0.1);
-                    border-top: 1px solid rgba(26, 122, 74, 0.3);
-                    border-bottom: 1px solid rgba(26, 122, 74, 0.3);
+                    margin-top: 100px;
+                    padding: 60px 30px;
+                    background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(10,30,20,0.9) 50%, rgba(0,0,0,0.8) 100%);
+                    border-top: 2px solid var(--primary);
+                    border-bottom: 2px solid var(--primary);
                     z-index: 2;
+                    overflow: hidden;
+                    box-shadow: 0 0 40px rgba(26, 122, 74, 0.2), inset 0 0 20px rgba(26, 122, 74, 0.1);
+                    animation: adrenalinePulse 1.5s infinite alternate;
+                  }
+                  .mission-panel::before {
+                    content: 'OVERDRIVE PROTOCOL';
+                    position: absolute;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 7rem;
+                    font-weight: 900;
+                    color: rgba(26, 122, 74, 0.05);
+                    white-space: nowrap;
+                    z-index: -1;
+                    pointer-events: none;
+                    letter-spacing: 15px;
+                  }
+                  .mission-panel::after {
+                    content: '';
+                    position: absolute;
+                    top: 0; left: -100%;
+                    width: 50%; height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(26, 122, 74, 0.3), transparent);
+                    transform: skewX(-45deg);
+                    animation: adrenalineSweep 2.5s infinite linear;
+                  }
+                  .mission-title {
+                    font-size: 2.5rem;
+                    color: #fff;
+                    margin-bottom: 15px;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    letter-spacing: 6px;
+                    text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary);
+                    animation: textGlitch 3s infinite;
+                  }
+                  .mission-text {
+                    color: #fff;
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    letter-spacing: 2px;
+                    max-width: 800px;
+                    margin: 0 auto;
+                    line-height: 1.6;
+                    text-transform: uppercase;
+                  }
+                  .mission-highlight {
+                    color: #fff;
+                    text-shadow: 0 0 10px var(--primary), 0 0 20px #fff;
+                  }
+                  @keyframes adrenalinePulse {
+                    0% { box-shadow: 0 0 30px rgba(26, 122, 74, 0.1), inset 0 0 10px rgba(26, 122, 74, 0.1); border-color: rgba(26, 122, 74, 0.5); }
+                    100% { box-shadow: 0 0 80px rgba(26, 122, 74, 0.5), inset 0 0 40px rgba(26, 122, 74, 0.3); border-color: var(--primary); }
+                  }
+                  @keyframes adrenalineSweep {
+                    0% { left: -100%; }
+                    100% { left: 200%; }
+                  }
+                  @keyframes textGlitch {
+                    0%, 100% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); opacity: 1; }
+                    92% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); opacity: 1; }
+                    94% { text-shadow: none; opacity: 0.8; transform: translateX(-2px); }
+                    96% { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); opacity: 1; transform: translateX(2px); }
+                    98% { text-shadow: none; opacity: 0.9; transform: translateX(0); }
                   }
                 `}
             </style>
@@ -354,9 +419,9 @@ const QALab = () => {
             </div>
 
             {/* FINAL MISSION PANEL */}
-            <div className="mission-panel" data-aos="fade-up">
-                <h3 style={{ fontSize: '1.8rem', color: '#fff', marginBottom: '10px' }}>🎯 My Mission</h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>To build reliable, scalable and high-quality software while delivering seamless user experiences.</p>
+            <div className="mission-panel" data-aos="zoom-in">
+                <h3 className="mission-title">🎯 My Mission</h3>
+                <p className="mission-text">To build <span className="mission-highlight">reliable</span>, <span className="mission-highlight">scalable</span> and high-quality software while delivering seamless user experiences.</p>
             </div>
         </section>
     );
