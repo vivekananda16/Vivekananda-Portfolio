@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaLaptopCode, FaServer, FaDatabase, FaLayerGroup, FaRocket } from 'react-icons/fa';
+import { FaLaptopCode, FaServer, FaDatabase, FaLayerGroup, FaRocket, FaCodeBranch } from 'react-icons/fa';
 
 const DevLab = () => {
     const [activePanel, setActivePanel] = useState(0);
