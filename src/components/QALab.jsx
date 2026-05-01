@@ -388,6 +388,12 @@ const QALab = () => {
             <div className="qa-lab-bg"></div>
             <div className="lab-particles"></div>
 
+            <div className="lab-header" data-aos="fade-down">
+                <p className="section-subtitle" style={{ color: 'var(--primary)' }}>Engineering Excellence</p>
+                <h2 className="section-title">Quality Engineering <span style={{ color: 'var(--primary)' }}>Lab</span></h2>
+                <p style={{ color: 'var(--text-muted)', marginTop: '10px' }}>Where I design, break and improve software to deliver reliable user experiences.</p>
+            </div>
+
             <div className="lab-layout">
                 {/* 3D CUBE */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', marginTop: '40px' }}>
@@ -461,7 +467,6 @@ const QALab = () => {
 
             {/* FINAL MISSION PANEL */}
             <div className="mission-panel" data-aos="zoom-in">
-                <h3 className="mission-title">🎯 My Mission</h3>
                 <p className="mission-text">To build <span className="mission-highlight">reliable</span>, <span className="mission-highlight">scalable</span> and high-quality software while delivering seamless user experiences.</p>
             </div>
         </section>
