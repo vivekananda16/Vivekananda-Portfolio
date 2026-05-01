@@ -590,7 +590,7 @@ const styles = {
     flex: 1,
     minWidth: '320px',
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   scrollDown: {
