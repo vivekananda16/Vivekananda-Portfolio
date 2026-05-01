@@ -73,7 +73,7 @@ const QALab = () => {
                   .qa-lab-bg {
                     position: absolute;
                     top: 0; left: 0; right: 0; bottom: 0;
-                    background: radial-gradient(circle at center, #111 0%, #000 100%);
+                    background: radial-gradient(circle at 50% 100%, rgba(26, 122, 74, 0.08) 0%, transparent 80%);
                     z-index: -2;
                   }
                   .lab-particles {
@@ -84,6 +84,48 @@ const QALab = () => {
                     opacity: 0.3;
                     z-index: -1;
                     animation: panBg 20s linear infinite;
+                  }
+                  .holographic-base {
+                    position: absolute;
+                    bottom: -30px;
+                    width: 250px;
+                    height: 80px;
+                    background: radial-gradient(ellipse at center, rgba(26, 122, 74, 0.5) 0%, transparent 70%);
+                    border-radius: 50%;
+                    transform: rotateX(75deg);
+                    animation: pulseBase 3s infinite alternate;
+                    z-index: -1;
+                  }
+                  .holographic-ring {
+                    position: absolute;
+                    bottom: -30px;
+                    width: 300px;
+                    height: 100px;
+                    border: 2px solid rgba(26, 122, 74, 0.6);
+                    border-radius: 50%;
+                    transform: rotateX(75deg);
+                    animation: spinRing 10s linear infinite;
+                    z-index: -1;
+                  }
+                  .holographic-ring::before, .holographic-ring::after {
+                    content: '';
+                    position: absolute;
+                    top: -10px; left: 50%;
+                    width: 15px; height: 15px;
+                    background: #1a7a4a;
+                    border-radius: 50%;
+                    box-shadow: 0 0 20px #1a7a4a;
+                  }
+                  .holographic-ring::after {
+                    top: auto; bottom: -10px;
+                  }
+                  @keyframes pulseBase {
+                    0% { transform: rotateX(75deg) scale(0.8); opacity: 0.5; }
+                    100% { transform: rotateX(75deg) scale(1.1); opacity: 1; }
+                  }
+                  @keyframes spinRing {
+                    0% { transform: rotateX(75deg) rotateZ(0deg); }
+                    100% { transform: rotateX(75deg) rotateZ(360deg); }
                   }
                   @keyframes panBg {
                     0% { background-position: 0 0; }
@@ -346,15 +388,11 @@ const QALab = () => {
             <div className="qa-lab-bg"></div>
             <div className="lab-particles"></div>
 
-            <div className="lab-header" data-aos="fade-down">
-                <p className="section-subtitle">Engineering Excellence</p>
-                <h2 className="section-title">Quality Engineering <span style={{ color: 'var(--primary)' }}>Lab</span></h2>
-                <p style={{ color: 'var(--text-muted)', marginTop: '10px' }}>Where I design, break and improve software to deliver reliable user experiences.</p>
-            </div>
-
             <div className="lab-layout">
                 {/* 3D CUBE */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', marginTop: '40px' }}>
+                    <div className="holographic-base"></div>
+                    <div className="holographic-ring"></div>
                     <div className="scene" data-aos="zoom-in">
                         <div 
                             className="cube" 
