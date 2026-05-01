@@ -67,13 +67,13 @@ const DevLab = () => {
     const currentContent = panels[activePanel];
 
     return (
-        <section id="dev-lab" className="section" onMouseMove={handleMouseMove} style={{ backgroundColor: '#050505', position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column', paddingTop: '80px', borderBottom: '2px solid #111' }}>
+        <section id="dev-lab" className="section" onMouseMove={handleMouseMove} style={{ backgroundColor: 'transparent', position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column', paddingTop: '80px', borderBottom: '1px solid rgba(0, 243, 255, 0.1)' }}>
             <style>
                 {`
                   .dev-lab-bg {
                     position: absolute;
                     top: 0; left: 0; right: 0; bottom: 0;
-                    background: radial-gradient(circle at 50% 100%, rgba(0, 243, 255, 0.05) 0%, #050505 80%);
+                    background: radial-gradient(circle at 50% 100%, rgba(0, 243, 255, 0.08) 0%, transparent 80%);
                     z-index: 1;
                   }
                   .neon-grid {
