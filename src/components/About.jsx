@@ -253,13 +253,13 @@ const About = () => {
                     pointer-events: none;
                   }
                   .box-art:hover .art-photo {
-                    animation: magicReveal 7s ease forwards;
+                    animation: magicReveal 9s ease forwards;
                   }
                   @keyframes magicReveal {
-                    0%   { opacity: 0; filter: blur(10px); transform: scale(0.9); }
-                    15%  { opacity: 1; filter: blur(0px); transform: scale(1); }
-                    85%  { opacity: 1; filter: blur(0px); transform: scale(1); }
-                    100% { opacity: 0; filter: blur(10px); transform: scale(1.05); }
+                    0%   { opacity: 0; filter: blur(12px); transform: scale(0.9); }
+                    22%  { opacity: 1; filter: blur(0px); transform: scale(1); }
+                    78%  { opacity: 1; filter: blur(0px); transform: scale(1); }
+                    100% { opacity: 0; filter: blur(12px); transform: scale(1.05); }
                   }
 
                   /* Background floating elements in Bio box */
