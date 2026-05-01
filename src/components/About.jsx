@@ -256,10 +256,10 @@ const About = () => {
                     animation: magicReveal 9s ease forwards;
                   }
                   @keyframes magicReveal {
-                    0%   { opacity: 0; filter: blur(12px); transform: scale(0.9); }
-                    22%  { opacity: 1; filter: blur(0px); transform: scale(1); }
-                    78%  { opacity: 1; filter: blur(0px); transform: scale(1); }
-                    100% { opacity: 0; filter: blur(12px); transform: scale(1.05); }
+                    0%   { opacity: 0; filter: blur(12px); transform: translateY(50px) scale(0.95); }
+                    22%  { opacity: 1; filter: blur(0px); transform: translateY(0) scale(1); }
+                    78%  { opacity: 1; filter: blur(0px); transform: translateY(0) scale(1); }
+                    100% { opacity: 0; filter: blur(12px); transform: translateY(-30px) scale(1.02); }
                   }
 
                   /* Background floating elements in Bio box */
