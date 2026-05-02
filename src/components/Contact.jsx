@@ -222,6 +222,117 @@ const Contact = () => {
             66% { transform: translateY(15px) rotate(-15deg) scale(0.9); }
             100% { transform: translateY(0px) rotate(0deg) scale(1); }
           }
+
+          /* Animated Response Message */
+          .footer-closing-wrapper {
+            margin-top: 80px;
+            text-align: center;
+            padding: 20px 0;
+          }
+          .thank-you-text {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-style: italic;
+            letter-spacing: 1px;
+          }
+          .response-message-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px 0;
+          }
+          .response-text-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            width: 100%;
+          }
+          .response-text {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #888;
+            letter-spacing: 2px;
+            position: absolute;
+            z-index: 2;
+            text-transform: uppercase;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            white-space: nowrap;
+          }
+          .default-text {
+            opacity: 1;
+            transform: translateY(0);
+            animation: textPulse 4s ease-in-out infinite;
+          }
+          .hover-text {
+            opacity: 0;
+            transform: translateY(20px);
+            color: #ccc;
+          }
+          .response-message-wrapper:hover .default-text {
+            opacity: 0;
+            transform: translateY(-20px) !important;
+            animation: none;
+          }
+          .response-message-wrapper:hover .hover-text {
+            opacity: 1;
+            transform: translateY(0);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+          }
+          .response-highlight {
+            background: linear-gradient(90deg, #00f3ff, #bc00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            font-style: italic;
+          }
+          .response-pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 40px;
+            background: #00f3ff;
+            filter: blur(50px);
+            opacity: 0.15;
+            border-radius: 50%;
+            z-index: 1;
+            animation: ringPulse 4s ease-in-out infinite;
+          }
+          @keyframes textPulse {
+            0%, 100% { opacity: 0.7; transform: translateY(0); text-shadow: 0 0 0 transparent; }
+            50% { opacity: 1; transform: translateY(-3px); text-shadow: 0 5px 15px rgba(0, 243, 255, 0.3); }
+          }
+          @keyframes ringPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.1; }
+            50% { transform: translate(-50%, -50%) scale(1.8); opacity: 0.3; }
+          }
+          
+          /* Responsive Text */
+          @media (max-width: 768px) {
+            .response-text {
+              font-size: 0.95rem;
+              letter-spacing: 1px;
+            }
+            .thank-you-text {
+              font-size: 1rem;
+              margin-bottom: 10px;
+            }
+            .response-text-container {
+              height: 40px;
+            }
+          }
+          @media (max-width: 480px) {
+            .response-text {
+              font-size: 0.75rem;
+              letter-spacing: 0.5px;
+            }
+          }
         `}
       </style>
 
@@ -294,6 +405,24 @@ const Contact = () => {
             </div>
           </div>
 
+        </div>
+      </div>
+      
+      {/* Footer Closing Section */}
+      <div className="footer-closing-wrapper" data-aos="fade-up" data-aos-offset="20">
+        <p className="thank-you-text">Thank you for visiting</p>
+        
+        {/* Animated Response Message */}
+        <div className="response-message-wrapper">
+          <div className="response-pulse-ring"></div>
+          <div className="response-text-container">
+            <h4 className="response-text default-text">
+              bhavataḥ pratikriyām <span className="response-highlight">pratīkṣa</span>māṇaḥ
+            </h4>
+            <h4 className="response-text hover-text">
+              <span className="response-highlight">waiting</span> for your response
+            </h4>
+          </div>
         </div>
       </div>
     </section>

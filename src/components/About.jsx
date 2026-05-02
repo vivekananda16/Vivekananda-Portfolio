@@ -45,7 +45,24 @@ const About = () => {
 
                   /* Grid Positions */
                   .box-bio { grid-column: span 2; grid-row: span 2; justify-content: center; }
-                  .box-art { grid-column: span 1; grid-row: span 2; padding: 0; display: flex; align-items: center; justify-content: center; }
+                  .box-art { 
+                    grid-column: span 1; 
+                    grid-row: span 2; 
+                    padding: 0; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    border: none !important;
+                    background: transparent !important;
+                    overflow: visible !important;
+                  }
+                  .box-art:hover {
+                    transform: none !important;
+                    box-shadow: none !important;
+                  }
+                  .box-art::before {
+                    display: none !important;
+                  }
                   .box-loc { grid-column: span 1; }
                   .box-edu { grid-column: span 1; }
                   .box-exp { grid-column: span 1; }
@@ -240,7 +257,7 @@ const About = () => {
                     100% { transform: rotateX(75deg) rotateY(15deg) rotateZ(0deg); }
                   }
                   
-                  /* Magic Photo Reveal */
+                  /* Static Photo with Hover Glow */
                   .art-photo {
                     position: absolute;
                     top: 0; left: 0; right: 0; bottom: 0;
@@ -248,18 +265,32 @@ const About = () => {
                     height: 100%;
                     object-fit: contain;
                     border-radius: inherit;
-                    opacity: 0;
+                    opacity: 1;
                     z-index: 20;
                     pointer-events: none;
+                    transition: all 0.5s ease;
                   }
                   .box-art:hover .art-photo {
-                    animation: magicReveal 9s ease forwards;
+                    filter: drop-shadow(0 0 25px rgba(10, 77, 255, 0.8)) drop-shadow(0 0 45px rgba(10, 77, 255, 0.4)) brightness(1.1);
                   }
-                  @keyframes magicReveal {
-                    0%   { opacity: 0; filter: blur(12px); transform: translateY(50px) scale(0.95); }
-                    22%  { opacity: 1; filter: blur(0px); transform: translateY(0) scale(1); }
-                    78%  { opacity: 1; filter: blur(0px); transform: translateY(0) scale(1); }
-                    100% { opacity: 0; filter: blur(12px); transform: translateY(-30px) scale(1.02); }
+
+                  /* Deep Blue Glowing Line */
+                  .horizontal-glowing-line {
+                    position: absolute;
+                    bottom: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 100%;
+                    height: 4px;
+                    background: #0a4dff;
+                    box-shadow: 0 0 10px #0a4dff, 0 0 20px #0a4dff, 0 0 30px #0a4dff;
+                    border-radius: 4px;
+                    z-index: 25;
+                    transition: all 0.5s ease;
+                  }
+                  
+                  .box-art:hover .horizontal-glowing-line {
+                    box-shadow: 0 0 15px #0a4dff, 0 0 30px #0a4dff, 0 0 50px #0a4dff;
                   }
 
                   /* Background floating elements in Bio box */
@@ -317,6 +348,7 @@ const About = () => {
                             <div className="art-ring-2"></div>
                             <div className="art-ring-3"></div>
                             <img src={profilePhoto} alt="Vivekananda" className="art-photo" />
+                            <div className="horizontal-glowing-line"></div>
                         </div>
                     </div>
 

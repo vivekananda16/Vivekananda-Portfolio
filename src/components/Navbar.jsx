@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-scroll';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
-const Navbar = ({ theme, toggleTheme }) => {
+const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -43,11 +43,6 @@ const Navbar = ({ theme, toggleTheme }) => {
                         -webkit-backdrop-filter: blur(12px);
                         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
                         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                    }
-                    .light .navbar-container.scrolled {
-                        background: rgba(255, 255, 255, 0.85);
-                        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-                        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
                     }
 
                     /* Logo Glitch & Hover */
@@ -149,21 +144,74 @@ const Navbar = ({ theme, toggleTheme }) => {
                         width: 100%;
                     }
                     
-                    /* Theme Btn Pulsing Glow */
-                    .theme-btn-glow {
-                        position: relative;
-                        background: var(--bg-card);
-                        border: 1px solid var(--border);
-                        border-radius: 50%;
-                        width: 40px; height: 40px;
-                        display: flex; align-items: center; justify-content: center;
+                    /* Mobile Menu Animation */
+                    .mobile-menu-wrapper {
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        width: 100%;
+                        background: rgba(18, 18, 18, 0.95);
+                        backdrop-filter: blur(15px);
+                        -webkit-backdrop-filter: blur(15px);
+                        border-bottom: 1px solid rgba(255,255,255,0.05);
+                        overflow: hidden;
+                        max-height: 0;
+                        opacity: 0;
+                        transition: max-height 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease;
+                        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                    }
+                    .light .mobile-menu-wrapper {
+                        background: rgba(255, 255, 255, 0.95);
+                        border-bottom: 1px solid rgba(0,0,0,0.05);
+                    }
+                    .mobile-menu-wrapper.open {
+                        max-height: 600px;
+                        opacity: 1;
+                        border-top: 1px solid rgba(255,255,255,0.05);
+                    }
+                    .mobile-menu-inner {
+                        display: flex;
+                        flex-direction: column;
+                        padding: 10px 24px 25px;
+                    }
+                    .mobile-nav-link {
+                        color: var(--text);
+                        text-decoration: none;
+                        font-size: 16px;
+                        font-weight: 500;
                         cursor: pointer;
+                        padding: 15px 0;
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                        transform: translateY(-15px);
+                        opacity: 0;
                         transition: all 0.3s ease;
                     }
-                    .theme-btn-glow:hover {
-                        transform: rotate(15deg) scale(1.1);
-                        border-color: var(--primary);
-                        box-shadow: 0 0 15px rgba(26, 122, 74, 0.5);
+                    .mobile-menu-wrapper.open .mobile-nav-link {
+                        transform: translateY(0);
+                        opacity: 1;
+                    }
+                    
+                    /* Stagger the links */
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(1) { transition-delay: 0.1s; }
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(2) { transition-delay: 0.15s; }
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(3) { transition-delay: 0.2s; }
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(4) { transition-delay: 0.25s; }
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(5) { transition-delay: 0.3s; }
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(6) { transition-delay: 0.35s; }
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(7) { transition-delay: 0.4s; }
+                    .mobile-menu-wrapper.open .mobile-nav-link:nth-child(8) { transition-delay: 0.45s; }
+                    
+                    .mobile-nav-link:hover {
+                        color: var(--primary);
+                        padding-left: 15px;
+                    }
+                    
+                    /* Hamburger Icon Animation */
+                    .hamburger-btn {
+                        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    }
+                    .hamburger-btn:active {
+                        transform: scale(0.8);
                     }
 
                     /* Responsive Media Queries */
@@ -233,8 +281,8 @@ const Navbar = ({ theme, toggleTheme }) => {
             </div>
 
             {/* Mobile Menu */}
-            {menuOpen && (
-                <div style={styles.mobileMenu}>
+            <div className={`mobile-menu-wrapper ${menuOpen ? 'open' : ''}`}>
+                <div className="mobile-menu-inner">
                     {navLinks.map((link) => (
                         <Link
                             key={link.to}
@@ -243,14 +291,14 @@ const Navbar = ({ theme, toggleTheme }) => {
                             smooth={true}
                             offset={-70}
                             duration={600}
-                            style={styles.mobileLink}
+                            className="mobile-nav-link"
                             onClick={() => setMenuOpen(false)}
                         >
                             {link.name}
                         </Link>
                     ))}
                 </div>
-            )}
+            </div>
         </nav>
     );
 };
@@ -287,25 +335,7 @@ const styles = {
         cursor: 'pointer',
         display: 'none',
         padding: '4px',
-    },
-    mobileMenu: {
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'rgba(18, 18, 18, 0.95)',
-        backdropFilter: 'blur(10px)',
-        padding: '20px 24px',
-        gap: '16px',
-        borderTop: '1px solid var(--border)',
-    },
-    mobileLink: {
-        color: 'var(--text)',
-        textDecoration: 'none',
-        fontSize: '16px',
-        fontWeight: '500',
-        cursor: 'pointer',
-        padding: '10px 0',
-        borderBottom: '1px solid var(--border)',
-    },
+    }
 };
 
 export default Navbar;

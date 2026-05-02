@@ -15,16 +15,7 @@
   --shadow:        rgba(26, 122, 74, 0.3);
 }
 
-/* ─── Light Theme ─────────────────────────── */
-.light {
-  --bg:         #f5f5f5;
-  --bg-card:    #ffffff;
-  --bg-nav:     #ffffff;
-  --text:       #1a1a1a;
-  --text-muted: #666666;
-  --border:     #e0e0e0;
-  --shadow:     rgba(26, 122, 74, 0.2);
-}
+
 
 /* ─── Reset ───────────────────────────────── */
 * {
@@ -42,7 +33,6 @@ body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--bg);
   color: var(--text);
-  transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
 }
 
@@ -178,10 +168,7 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-.light .btn-glass {
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
+
 
 .btn-glass:hover {
   background: rgba(26, 122, 74, 0.1);

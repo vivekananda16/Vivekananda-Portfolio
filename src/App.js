@@ -1,22 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import About from './components/About';
-import Skills from './components/Skills';
-import Projects from './components/Projects';
-import Certifications from './components/Certifications';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import Global3DEnvironment from './components/Global3DEnvironment';
-import DevLab from './components/DevLab';
-import QALab from './components/QALab';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-function App() {
-  const [theme, setTheme] = useState('dark');
+// Lazy loading heavy components
+const Global3DEnvironment = React.lazy(() => import('./components/Global3DEnvironment'));
+const About = React.lazy(() => import('./components/About'));
+const Skills = React.lazy(() => import('./components/Skills'));
+const Projects = React.lazy(() => import('./components/Projects'));
+const Certifications = React.lazy(() => import('./components/Certifications'));
+const DevLab = React.lazy(() => import('./components/DevLab'));
+const QALab = React.lazy(() => import('./components/QALab'));
+const Contact = React.lazy(() => import('./components/Contact'));
+const Footer = React.lazy(() => import('./components/Footer'));
 
+// A simple fallback component
+const Loader = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--primary)', background: 'var(--bg)' }}>
+    <div className="spinner"></div>
+    <style>{`
+      .spinner { border: 4px solid rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; border-left-color: var(--primary); animation: spin 1s linear infinite; }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    `}</style>
+  </div>
+);
+
+function App() {
   // Initialize AOS animations
   useEffect(() => {
     AOS.init({
@@ -27,25 +38,21 @@ function App() {
     });
   }, []);
 
-  // Toggle dark/light theme
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
-  };
-
   return (
-    <div className={theme === 'light' ? 'light' : ''}>
-      <Global3DEnvironment />
-      
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
+    <div>
+      <Navbar />
       <Hero />
-      <About />
-      <Skills />
-      <Projects />
-      <Certifications />
-      <DevLab />
-      <QALab />
-      <Contact />
-      <Footer />
+      <Suspense fallback={<Loader />}>
+        <Global3DEnvironment />
+        <About />
+        <Skills />
+        <Projects />
+        <Certifications />
+        <DevLab />
+        <QALab />
+        <Contact />
+        <Footer />
+      </Suspense>
     </div>
   );
 }
